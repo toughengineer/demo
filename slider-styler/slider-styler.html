@@ -1,0 +1,784 @@
+﻿<html>
+<head>
+  <meta charset="utf-8">
+
+  <!-- Primary Meta Tags -->
+  <title>Input range slider CSS styler across browsers</title>
+  <meta name="title" content="Input range slider CSS styler across browsers">
+  <meta name="description" content="Style <input> range sliders across browsers! Easy!">
+
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://toughengineer.github.io/demo/slider-styler">
+  <meta property="og:title" content="Input range slider CSS styler across browsers">
+  <meta property="og:description" content="Style <input> range sliders across browsers! Easy!">
+  <meta property="og:image" content="https://toughengineer.github.io/demo/slider-styler/thumbnail.png">
+
+  <!-- Twitter -->
+  <meta property="twitter:card" content="summary_large_image">
+  <meta property="twitter:url" content="https://toughengineer.github.io/demo/slider-styler">
+  <meta property="twitter:title" content="Input range slider CSS styler across browsers">
+  <meta property="twitter:description" content="Style <input> range sliders across browsers! Easy!">
+  <meta property="twitter:image" content="https://toughengineer.github.io/demo/slider-styler/thumbnail.png">
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@simonwep/pickr/dist/themes/monolith.min.css" />
+  <style type="text/css">
+    .notQuite100Percent {
+      max-width: 70em;
+    }
+
+    h1, h2, h3 {
+      text-align: center;
+      margin-top: 0.5em;
+      margin-bottom: 0.5em;
+    }
+
+    .textblock {
+      margin: 1em;
+    }
+
+    p {
+      font-size: 1.1em;
+      line-height: 150%;
+    }
+
+    .note {
+      color: #222;
+      font-size: 0.8em;
+    }
+
+    .notePanel {
+      display: inline-block;
+      background: #fdfdfd;
+      border-radius: 0.5em;
+      padding: 0 1em 0 1em;
+      box-shadow: 0 0 0.5em #eee;
+    }
+
+    a[target="_blank"]:not(.no-external-link-icon)::after {
+      content: "";
+      width: 1em;
+      height: 1em;
+      background: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxNiAxNiIgd2lkdGg9IjE2IiBoZWlnaHQ9IjE2Ij48cGF0aCBkPSJNOSAyTDkgMyAxMi4zIDMgNiA5LjMgNi43IDEwIDEzIDMuNyAxMyA3IDE0IDcgMTQgMlpNNCA0QzIuOSA0IDIgNC45IDIgNkwyIDEyQzIgMTMuMSAyLjkgMTQgNCAxNEwxMCAxNEMxMS4xIDE0IDEyIDEzLjEgMTIgMTJMMTIgNyAxMSA4IDExIDEyQzExIDEyLjYgMTAuNiAxMyAxMCAxM0w0IDEzQzMuNCAxMyAzIDEyLjYgMyAxMkwzIDZDMyA1LjQgMy40IDUgNCA1TDggNSA5IDRaIi8+PC9zdmc+) no-repeat;
+      background-size: contain;
+      margin: 0 0.05em 0 0.1em;
+      display: inline-block;
+      vertical-align: text-bottom;
+    }
+
+    img.icon {
+      width: 1em;
+      height: 1em;
+      vertical-align: text-bottom;
+    }
+
+    .example {
+      border: 0.5em solid #f5f5f5;
+    }
+
+    .group {
+      margin: 1em;
+      padding: 1em;
+      border: 1px solid #ccc;
+      border-radius: 0.7em;
+      box-shadow: 0 0 0.5em #eee;
+    }
+
+    .subgroup {
+      margin: 0.5em 0 0.5em 0;
+    }
+
+      .subgroup:last-child {
+        margin-bottom: 0;
+      }
+
+      .subgroup + .subgroup {
+        margin-top: 1.5em;
+      }
+
+    .subgroupBorder {
+      padding: 0.5em;
+      border: 1px solid #ddd;
+      border-radius: 0.35em;
+      box-shadow: 0 0 0.25em #eee;
+    }
+
+      .subgroupBorder + .subgroupBorder {
+        margin-top: 1em;
+      }
+
+    input[type="number"] {
+      width: 5em;
+    }
+
+    input[type="checkbox"] {
+      vertical-align: middle;
+    }
+
+    .raw, .raw input {
+      font-family: Courier, monospace;
+      font-size: 1em;
+    }
+
+    .validationDisplay {
+      padding: 1px;
+      border: 1px solid transparent;
+      border-radius: 3px;
+    }
+
+      .validationDisplay.invalid {
+        border-color: red;
+      }
+
+    .flexVCentered {
+      display: flex;
+      align-items: center;
+    }
+
+    .grow1 {
+      flex-grow: 1;
+    }
+
+    .code {
+      font-family: Courier, monospace;
+    }
+
+    .colorPicker {
+      display: inline-block;
+      vertical-align: middle;
+      margin: 0 0.5em 0 0.5em;
+    }
+
+    input.controlVisibility:not(:checked) ~ .hidden {
+      display: none;
+    }
+
+    input.controlVisibility:not(:checked) ~ .invisible {
+      visibility: hidden;
+    }
+
+    .codeContainer {
+      border: 1px solid #ccc;
+      padding: 0.5em;
+      box-shadow: 0 0 0.5em #eee;
+      overflow: auto;
+      font-family: Courier, monospace;
+      white-space: pre;
+    }
+
+    .credits:not(:hover) {
+      opacity: 0.33;
+    }
+  </style>
+  <style id="styleElement" type="text/css"></style>
+</head>
+<body>
+  <div class="textblock notQuite100Percent">
+    <h1>Input range slider CSS styler across browsers</h1>
+    <p>
+      Style <code>&lt;input&gt;</code> range sliders CSS across browsers!<br />
+      Use convenient controls, or edit CSS properties directly.
+      <span class="note">
+        CSS property inputs indicate when the value is
+        <span class="raw validationDisplay invalid" style="display: inline-block;"><input value="invalid" readonly /></span>
+      </span><br />
+      You'll figure it out, I believe in you!
+    </p>
+    <p>
+      This styler is <em>kinda</em> tested in Chrome and Firefox (end of 2020), and Safari 13 (OS X 10.15).
+      It even kinda works in the old Edge <span class="note">(not the Chromium based)</span>.<br />
+      It does not work in IE though.
+    </p>
+    <div class="notePanel">
+      <p>
+        Read <a href="https://css-tricks.com/sliding-nightmare-understanding-range-input/" target="_blank"><em>this great article</em></a>
+        if you want to know how <code>&lt;input&gt;</code> range CSS styling works under the hood.<br />
+        It's a shame that in 2020 styling of sliders is not yet standardized.
+        Here is <a href="https://github.com/w3c/csswg-drafts/issues/4410" target="_blank">a proposal</a> for standardization that I know of.
+      </p>
+    </div>
+    <p>
+      Go to the explanation <a href="#explanation">below</a> for more details.
+    </p>
+    <p>
+      Examples: <span class="note">(gray border indicates edges of <code>&lt;input&gt;</code> elements)</span>
+    </p>
+  </div>
+  <div id="controlsContainer">
+    <div class="notQuite100Percent">
+      <div>
+        Without styling:<br />
+        <div class="example" style="display: inline-block;">
+          <input type="range" />
+        </div>
+        <div class="example">
+          <input type="range" style="width:100%;" />
+        </div>
+      </div>
+    </div>
+    <div style="position: sticky; top: 0; z-index: 9000;">
+      <div style="background: white;">
+        <div id="examples" class="notQuite100Percent">
+          <div>
+            Styled sliders:<br />
+            <div class="example" style="display: inline-block;">
+              <input id="slider" class="styled-slider" type="range" />
+            </div>
+            <div class="example">
+              <input id="longSlider" class="styled-slider" type="range" style="width:100%;" />
+            </div>
+          </div>
+          <div>
+            Styled sliders with progress:<br />
+            <div class="example" style="display: inline-block;">
+              <input id="progressSlider" class="styled-slider slider-progress" type="range" />
+            </div>
+            <div class="example">
+              <input id="longProgressSlider" class="styled-slider slider-progress" type="range" style="width:100%;" />
+            </div>
+          </div>
+        </div>
+      </div>
+      <div style="height: 1em; background: linear-gradient(white, #fff0);"></div>
+    </div>
+
+    <div style="display: inline-block; min-width: 40em;">
+      <!--element height section-->
+      <div id="element" class="group">
+        <h3>element height</h3>
+
+        <!--height section-->
+        <div id="height" class="subgroup">
+          <label>
+            <strong>Height:</strong>
+            <input id="height" type="number" value="0" min="0" />
+          </label>
+          <select id="heightUnit">
+            <option selected>px</option>
+            <option>em</option>
+          </select>
+          <span style="color: gray; margin-left: 1em">set to zero (empty, not defined) to keep the default</span>
+          <div class="subgroup raw validationDisplay">
+            <label class="flexVCentered">
+              height:
+              <input id="rawHeight" type="text" placeholder="not defined" class="grow1" />
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <!--handle section-->
+      <div id="handle" class="group">
+        <h3>handle (thumb)</h3>
+
+        <!-- background section -->
+        <div id="background" class="subgroup">
+
+          <!-- normal section -->
+          <div id="normal" class="subgroup">
+            <label><strong>Background:</strong></label>
+            <div class="colorPicker"><div id="backgroundColor"></div></div>
+            <label title="use gradient">
+              gradient
+              <input id="gradientCheckbox" type="checkbox" />
+            </label>
+            <div class="colorPicker"><div id="backgroundColor2"></div></div>
+            <div class="subgroup raw validationDisplay">
+              <label class="flexVCentered">
+                background:
+                <input id="rawBackground" type="text" class="grow1" />
+              </label>
+            </div>
+          </div>
+
+          <!-- :hover section -->
+          <div id="hover" class="subgroupBorder">
+            <input id="handleBackgroundHoverCheckbox" type="checkbox" class="controlVisibility" /><label class="code" for="handleBackgroundHoverCheckbox">:hover</label>
+            <div class="colorPicker invisible">
+              <div class="colorPicker"><div id="backgroundColor"></div></div>
+              <label title="use gradient">
+                gradient
+                <input id="gradientCheckbox" type="checkbox" />
+              </label>
+              <div class="colorPicker"><div id="backgroundColor2"></div></div>
+            </div>
+            <div class="subgroup raw validationDisplay hidden">
+              <label class="flexVCentered grow1">
+                background:
+                <input id="rawBackground" type="text" class="grow1" />
+              </label>
+            </div>
+          </div>
+
+          <!-- :active section -->
+          <div id="active" class="subgroupBorder">
+            <input id="handleBackgroundActiveCheckbox" type="checkbox" class="controlVisibility" /><label class="code" for="handleBackgroundActiveCheckbox">:active</label>
+            <div class="colorPicker invisible">
+              <div class="colorPicker"><div id="backgroundColor"></div></div>
+              <label title="use gradient">
+                gradient
+                <input id="gradientCheckbox" type="checkbox" />
+              </label>
+              <div class="colorPicker"><div id="backgroundColor2"></div></div>
+            </div>
+            <div class="subgroup raw validationDisplay hidden">
+              <label class="flexVCentered">
+                background:
+                <input id="rawBackground" type="text" class="grow1" />
+              </label>
+              <div class="validationDisplay"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- width section -->
+        <div id="width" class="subgroup">
+          <label>
+            <strong>Width:</strong>
+            <input id="width" type="number" value="0" min="0" />
+          </label>
+          <select id="widthUnit">
+            <option selected>px</option>
+            <option>em</option>
+          </select>
+          <div class="subgroup raw validationDisplay">
+            <label class="flexVCentered">
+              width:
+              <input id="rawWidth" type="text" class="grow1" />
+            </label>
+          </div>
+        </div>
+
+        <!-- height section -->
+        <div id="height" class="subgroup">
+          <label>
+            <strong>Height:</strong>
+            <input id="height" type="number" value="0" min="0" />
+          </label>
+          <select id="heightUnit">
+            <option selected>px</option>
+            <option>em</option>
+          </select>
+          <div class="subgroup raw validationDisplay">
+            <label class="flexVCentered">
+              height:
+              <input id="rawHeight" type="text" class="grow1" />
+            </label>
+          </div>
+        </div>
+
+        <!-- border radius section -->
+        <div id="borderRadius" class="subgroup">
+          <label>
+            <strong>Border radius:</strong>
+            <input id="borderRadius" type="number" value="0" min="0" />
+          </label>
+          <select id="borderRadiusUnit">
+            <option selected>px</option>
+            <option>em</option>
+          </select>
+          <div class="subgroup raw validationDisplay">
+            <label class="flexVCentered">
+              border-radius:
+              <input id="rawBorderRadius" type="text" class="grow1" />
+            </label>
+          </div>
+        </div>
+
+        <!-- border section -->
+        <div id="border" class="subgroup">
+
+          <!-- normal section -->
+          <div id="normal" class="subgroup">
+            <label>
+              <strong>Border:</strong>
+              <input id="borderWidth" type="number" value="0" min="0" />
+            </label>
+            <select id="borderWidthUnit">
+              <option selected>px</option>
+              <option>em</option>
+            </select>
+            <div class="colorPicker"><div id="borderColor"></div></div>
+            <div class="subgroup raw validationDisplay">
+              <label class="flexVCentered">
+                border:
+                <input id="rawBorder" type="text" class="grow1" />
+              </label>
+            </div>
+          </div>
+
+          <!-- :hover section -->
+          <div id="hover" class="subgroupBorder">
+            <input id="handleBorderColorHoverCheckbox" type="checkbox" class="controlVisibility" /><label class="code" for="handleBorderColorHoverCheckbox">:hover</label>
+            <div class="colorPicker invisible"><div id="borderColor"></div></div>
+            <div class="subgroup raw validationDisplay hidden">
+              <label class="flexVCentered">
+                border-color:
+                <input id="rawBorderColor" type="text" class="grow1" />
+              </label>
+            </div>
+          </div>
+
+          <!-- :active section -->
+          <div id="active" class="subgroupBorder">
+            <input id="handleBorderColorActiveCheckbox" type="checkbox" class="controlVisibility" /><label class="code" for="handleBorderColorActiveCheckbox">:active</label>
+            <div class="colorPicker invisible"><div id="borderColor"></div></div>
+            <div class="subgroup raw validationDisplay hidden">
+              <label class="flexVCentered">
+                border-color:
+                <input id="rawBorderColor" type="text" class="grow1" />
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <!-- shadow section -->
+        <div id="shadow" class="subgroup">
+          <div>
+            <label><strong>Shadow:</strong></label>
+            <div class="colorPicker"><div id="shadowColor"></div></div>
+          </div>
+          <div style="display: inline-block; margin-top: 0.5em; text-align: right;">
+            <div>
+              <label>x offset <input id="shadowX" type="number" value="0" /></label>
+              <select id="shadowXUnit">
+                <option selected>px</option>
+                <option>em</option>
+              </select>
+            </div>
+            <div>
+              <label>y offset <input id="shadowY" type="number" value="0" /></label>
+              <select id="shadowYUnit">
+                <option selected>px</option>
+                <option>em</option>
+              </select>
+            </div>
+            <div>
+              <label>blur <input id="shadowBlur" type="number" value="0" min="0" /></label>
+              <select id="shadowBlurUnit">
+                <option selected>px</option>
+                <option>em</option>
+              </select>
+            </div>
+            <div>
+              <label>spread <input id="shadowSpread" type="number" value="0" min="0" /></label>
+              <select id="shadowSpreadUnit">
+                <option selected>px</option>
+                <option>em</option>
+              </select>
+            </div>
+          </div>
+          <div class="subgroup raw validationDisplay">
+            <label class="flexVCentered">
+              box-shadow:
+              <input id="rawShadow" type="text" class="grow1" />
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <!-- track section -->
+      <div id="track" class="group">
+        <h3>track</h3>
+
+        <!-- background section -->
+        <div id="background" class="subgroup">
+
+          <!-- normal section -->
+          <div id="normal" class="subgroup">
+            <label><strong>Background:</strong></label>
+            <div class="colorPicker"><div id="backgroundColor"></div></div>
+            <label title="use gradient">
+              gradient
+              <input id="gradientCheckbox" type="checkbox" />
+            </label>
+            <div class="colorPicker"><div id="backgroundColor2"></div></div>
+            <div class="subgroup raw validationDisplay">
+              <label class="flexVCentered">
+                background:
+                <input id="rawBackground" type="text" class="grow1" />
+              </label>
+            </div>
+          </div>
+
+          <!-- :hover section -->
+          <div id="hover" class="subgroupBorder">
+            <input id="trackBackgroundHoverCheckbox" type="checkbox" class="controlVisibility" /><label class="code" for="trackBackgroundHoverCheckbox">:hover</label>
+            <div class="colorPicker invisible">
+              <div class="colorPicker"><div id="backgroundColor"></div></div>
+              <label title="use gradient">
+                gradient
+                <input id="gradientCheckbox" type="checkbox" />
+              </label>
+              <div class="colorPicker"><div id="backgroundColor2"></div></div>
+            </div>
+            <div class="subgroup raw validationDisplay hidden">
+              <label class="flexVCentered">
+                background:
+                <input id="rawBackground" type="text" class="grow1" />
+              </label>
+            </div>
+          </div>
+
+          <!-- :active section -->
+          <div id="active" class="subgroupBorder">
+            <input id="trackBackgroundActiveCheckbox" type="checkbox" class="controlVisibility" /><label class="code" for="trackBackgroundActiveCheckbox">:active</label>
+            <div class="colorPicker invisible">
+              <div class="colorPicker"><div id="backgroundColor"></div></div>
+              <label title="use gradient">
+                gradient
+                <input id="gradientCheckbox" type="checkbox" />
+              </label>
+              <div class="colorPicker"><div id="backgroundColor2"></div></div>
+            </div>
+            <div class="subgroup raw validationDisplay hidden">
+              <label class="flexVCentered">
+                background:
+                <input id="rawBackground" type="text" class="grow1" />
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <!-- height section -->
+        <div id="height" class="subgroup">
+          <label>
+            <strong>Height:</strong>
+            <input id="height" type="number" value="0" min="0" />
+          </label>
+          <select id="heightUnit">
+            <option selected>px</option>
+            <option>em</option>
+          </select>
+          <div class="subgroup raw validationDisplay">
+            <label class="flexVCentered">
+              height:
+              <input id="rawHeight" type="text" class="grow1" />
+            </label>
+          </div>
+        </div>
+
+        <!-- width section -->
+        <div id="borderRadius" class="subgroup">
+          <label>
+            <strong>Border radius:</strong>
+            <input id="borderRadius" type="number" value="0" min="0" />
+          </label>
+          <select id="borderRadiusUnit">
+            <option selected>px</option>
+            <option>em</option>
+          </select>
+          <div class="subgroup raw validationDisplay">
+            <label class="flexVCentered">
+              border-radius:
+              <input id="rawBorderRadius" type="text" class="grow1" />
+            </label>
+          </div>
+        </div>
+
+        <!-- border section -->
+        <div id="border" class="subgroup">
+
+          <!-- normal section -->
+          <div id="normal" class="subgroup">
+            <label>
+              <strong>Border:</strong>
+              <input id="borderWidth" type="number" value="0" min="0" />
+            </label>
+            <select id="borderWidthUnit">
+              <option selected>px</option>
+              <option>em</option>
+            </select>
+            <div class="colorPicker"><div id="borderColor"></div></div>
+            <div class="subgroup raw validationDisplay">
+              <label class="flexVCentered">
+                border:
+                <input id="rawBorder" type="text" class="grow1" />
+              </label>
+            </div>
+          </div>
+
+          <!-- :hover section -->
+          <div id="hover" class="subgroupBorder">
+            <input id="trackBorderColorHoverCheckbox" type="checkbox" class="controlVisibility" /><label class="code" for="trackBorderColorHoverCheckbox">:hover</label>
+            <div class="colorPicker invisible"><div id="borderColor"></div></div>
+            <div class="subgroup raw validationDisplay hidden">
+              <label class="flexVCentered">
+                border-color:
+                <input id="rawBorderColor" type="text" class="grow1" />
+              </label>
+            </div>
+          </div>
+
+          <!-- :active section -->
+          <div id="active" class="subgroupBorder">
+            <input id="trackBorderColorActiveCheckbox" type="checkbox" class="controlVisibility" /><label class="code" for="trackBorderColorActiveCheckbox">:active</label>
+            <div class="colorPicker invisible"><div id="borderColor"></div></div>
+            <div class="subgroup raw validationDisplay hidden">
+              <label class="flexVCentered">
+                border-color:
+                <input id="rawBorderColor" type="text" class="grow1" />
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <!-- shadow section -->
+        <div id="shadow" class="subgroup">
+          <div>
+            <label><strong>Shadow:</strong></label>
+            <div class="colorPicker"><div id="shadowColor"></div></div>
+          </div>
+          <div style="display: inline-block; margin-top: 0.5em; text-align: right;">
+            <div>
+              <label>x offset <input id="shadowX" type="number" value="0" /></label>
+              <select id="shadowXUnit">
+                <option selected>px</option>
+                <option>em</option>
+              </select>
+            </div>
+            <div>
+              <label>y offset <input id="shadowY" type="number" value="0" /></label>
+              <select id="shadowYUnit">
+                <option selected>px</option>
+                <option>em</option>
+              </select>
+            </div>
+            <div>
+              <label>blur <input id="shadowBlur" type="number" value="0" min="0" /></label>
+              <select id="shadowBlurUnit">
+                <option selected>px</option>
+                <option>em</option>
+              </select>
+            </div>
+            <div>
+              <label>spread <input id="shadowSpread" type="number" value="0" min="0" /></label>
+              <select id="shadowSpreadUnit">
+                <option selected>px</option>
+                <option>em</option>
+              </select>
+            </div>
+          </div>
+          <div class="subgroup raw validationDisplay">
+            <label class="flexVCentered">
+              box-shadow:
+              <input id="rawShadow" type="text" class="grow1" />
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <!-- progress section -->
+      <div id="progress" class="group">
+        <h3>track progress indication</h3>
+
+        <!-- background section -->
+        <div id="background" class="subgroup">
+
+          <!-- normal section -->
+          <div id="normal" class="subgroup">
+            <label><strong>Background:</strong></label>
+            <div class="colorPicker"><div id="backgroundColor"></div></div>
+            <label title="use gradient">
+              gradient
+              <input id="gradientCheckbox" type="checkbox" />
+            </label>
+            <div class="colorPicker"><div id="backgroundColor2"></div></div>
+            <div class="subgroup raw validationDisplay">
+              <label class="flexVCentered">
+                background:
+                <input id="rawBackground" type="text" class="grow1" />
+              </label>
+            </div>
+          </div>
+
+          <!-- :hover section -->
+          <div id="hover" class="subgroupBorder">
+            <input id="progressBackgroundHoverCheckbox" type="checkbox" class="controlVisibility" /><label class="code" for="progressBackgroundHoverCheckbox">:hover</label>
+            <div class="colorPicker invisible">
+              <div class="colorPicker"><div id="backgroundColor"></div></div>
+              <label title="use gradient">
+                gradient
+                <input id="gradientCheckbox" type="checkbox" />
+              </label>
+              <div class="colorPicker"><div id="backgroundColor2"></div></div>
+            </div>
+            <div class="subgroup raw validationDisplay hidden">
+              <label class="flexVCentered">
+                background:
+                <input id="rawBackground" type="text" class="grow1" />
+              </label>
+            </div>
+          </div>
+
+          <!-- :active section -->
+          <div id="active" class="subgroupBorder">
+            <input id="progressBackgroundActiveCheckbox" type="checkbox" class="controlVisibility" /><label class="code" for="progressBackgroundActiveCheckbox">:active</label>
+            <div class="colorPicker invisible">
+              <div class="colorPicker"><div id="backgroundColor"></div></div>
+              <label title="use gradient">
+                gradient
+                <input id="gradientCheckbox" type="checkbox" />
+              </label>
+              <div class="colorPicker"><div id="backgroundColor2"></div></div>
+            </div>
+            <div class="subgroup raw validationDisplay hidden">
+              <label class="flexVCentered">
+                background:
+                <input id="rawBackground" type="text" class="grow1" />
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div style="display: inline-block; vertical-align: top; width: 50em; margin-bottom: 1em;">
+      <span id="download-section">CSS</span>: <button id="copyCssButton" class="copyButton">copy</button> <a id="downloadCssLink" href="javascript:void(0)">download</a>
+      <div id="styleDisplay" class="codeContainer" style="height: 70%; margin-bottom: 1em;">change some styles</div>
+      JS for progress tracking: <button id="copyJSButton" class="copyButton">copy</button> <a class="no-external-link-icon" href="range-input.js" download target="_blank">download</a>
+      <pre id="scriptDisplay" class="codeContainer" style="margin: 0;">for (let e of document.querySelectorAll('input[type="range"].slider-progress')) {
+  e.style.setProperty('--value', e.value);
+  e.style.setProperty('--min', e.min == '' ? '0' : e.min);
+  e.style.setProperty('--max', e.max == '' ? '100' : e.max);
+  e.addEventListener('input', () => e.style.setProperty('--value', e.value));
+}</pre>
+      Be sure to add the script to your page as explained <a href="#explanation">below</a>.
+    </div>
+  </div>
+  <div id="explanation" class="textblock notQuite100Percent">
+    <p><strong>Some more details</strong></p>
+    <p>
+      For progress indication to work, you need to add a script to your page, see <a href="#download-section">above</a>.
+      You can dowload, put it to your assets and add it as external script:
+    </p>
+    <pre class="codeContainer">&lt;script src="range-input.js"&gt;&lt;/script&gt;</pre>
+    <p>
+      or just copy-paste the contents right inside the <code>&lt;script&gt;</code> element.<br />
+      The idea is borrowed from
+      <a href="https://css-tricks.com/sliding-nightmare-understanding-range-input/#the-range-progress-fill-component" target="_blank"><em>this great article</em></a>.
+    </p>
+    <p>
+      Handle may be one pixel off center with respect to track. You'll have to wangjangle with it a bit.<br />
+      Handles are represented with an HTML element (like <code>&lt;div&gt;</code> or something),
+      apparently elements don't like to be at fractional coordinates.
+    </p>
+    <p>
+      <code>border-box</code> <a href="https://developer.mozilla.org/ru/docs/Web/CSS/box-sizing" target="_blank">sizing model</a> is used for handle and track,
+      i.e. specified width and height are generally what you get regardless of the border width.
+      (Unless border is dummy thick, but then jokes on you!)
+    </p>
+  </div>
+  <div class="credits">
+    <div class="notQuite100Percent" style="text-align:center; margin: 2em 0 1em 0;">
+      View source code on <a class="no-external-link-icon" href="https://github.com/toughengineer/demo/slider-styler" target="_blank"><img class="icon" src="/demo/mark-github.svg" /> GitHub</a>
+      (Not recommended for sanity sake.) &#xFF5C;
+      <a class="no-external-link-icon" href="https://github.com/Simonwep/pickr" target="_blank">Color picker</a> by <a class="no-external-link-icon" href="https://github.com/Simonwep" target="_blank">Simonwep</a> &#xFF5C;
+      <a class="no-external-link-icon" href="https://icons8.com/icon/43738/external-link" target="_blank">External Link icon by Icons8</a><br />
+      These links will open in new tabs.
+    </div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/@simonwep/pickr/dist/pickr.es5.min.js"></script>
+  <script src="slider-styler.min.js"></script>
+  <script src="range-input.js"></script>
+</body>
+</html>
