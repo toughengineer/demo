@@ -1,4 +1,4 @@
-const version = '20201220';
+const version = '20201221';
 
 const defaultSetup = {
   element: {
@@ -812,17 +812,25 @@ input[type=range].styled-slider::-webkit-slider-runnable-track {
 
 `;
 
+  function valueOrDefault(value, defaultValue) {
+    return value.length == 0 ? defaultValue : value;
+  }
+
+  const trackHoverNormalBg = valueOrDefault(inputs.track.hover.background.value, inputs.track.background.value);
+
   let trackProgressHoverBg = inputs.progress.hover.background.value;
   if (trackProgressHoverBg.length != 0) {
     trackProgressHoverBg = makeGradientIfNeeded(trackProgressHoverBg);
 
     s +=
       `input[type=range].styled-slider.slider-progress:hover::-webkit-slider-runnable-track {
-  background: ${trackProgressHoverBg} 0/var(--sx) 100% no-repeat, ${inputs.track.hover.background.value};
+  background: ${trackProgressHoverBg} 0/var(--sx) 100% no-repeat, ${trackHoverNormalBg};
 }
 
 `;
   }
+
+  const trackActiveNormalBg = valueOrDefault(inputs.track.active.background.value, trackHoverNormalBg);
 
   let trackProgressActiveBg = inputs.progress.active.background.value;
   if (trackProgressActiveBg.length != 0) {
@@ -830,7 +838,7 @@ input[type=range].styled-slider::-webkit-slider-runnable-track {
 
     s +=
       `input[type=range].styled-slider.slider-progress:active::-webkit-slider-runnable-track {
-  background: ${trackProgressActiveBg} 0/var(--sx) 100% no-repeat, ${inputs.track.active.background.value};
+  background: ${trackProgressActiveBg} 0/var(--sx) 100% no-repeat, ${trackActiveNormalBg};
 }
 
 `;
@@ -894,7 +902,7 @@ input[type=range].styled-slider::-moz-range-track {
   if (trackProgressHoverBg.length != 0) {
     s +=
       `input[type=range].styled-slider.slider-progress:hover::-moz-range-track {
-  background: ${trackProgressHoverBg} 0/var(--sx) 100% no-repeat, ${inputs.track.hover.background.value};
+  background: ${trackProgressHoverBg} 0/var(--sx) 100% no-repeat, ${trackHoverNormalBg};
 }
 
 `;
@@ -903,7 +911,7 @@ input[type=range].styled-slider::-moz-range-track {
   if (trackProgressActiveBg.length != 0) {
     s +=
       `input[type=range].styled-slider.slider-progress:active::-moz-range-track {
-  background: ${trackProgressActiveBg} 0/var(--sx) 100% no-repeat, ${inputs.track.active.background.value};
+  background: ${trackProgressActiveBg} 0/var(--sx) 100% no-repeat, ${trackActiveNormalBg};
 }
 
 `;
@@ -941,27 +949,27 @@ input[type=range].styled-slider::-ms-track {
   box-sizing: border-box;
 }
 
-input[type=range].styled-slider::-ms-thumb:hover {
-  background: ${inputs.handle.hover.background.value};
-  border-color: ${inputs.handle.hover.borderColor.value};
-}
-
-input[type=range].styled-slider:hover::-ms-track {
-  background: ${inputs.track.hover.background.value};
-  border-color: ${inputs.track.hover.borderColor.value};
-}
-
-input[type=range].styled-slider::-ms-thumb:active {
-  background: ${inputs.handle.active.background.value};
-  border-color: ${inputs.handle.active.borderColor.value};
-}
-
-input[type=range].styled-slider:active::-ms-track {
-  background: ${inputs.track.active.background.value};
-  border-color: ${inputs.track.active.borderColor.value};
-}
-
 `;
+
+  addRule('input[type=range].styled-slider::-ms-thumb:hover',
+    ['background', inputs.handle.hover.background.value],
+    ['border-color', inputs.handle.hover.borderColor.value]
+  );
+
+  addRule('input[type=range].styled-slider:hover::-ms-track',
+    ['background', inputs.track.hover.background.value],
+    ['border-color', inputs.track.hover.borderColor.value]
+  );
+
+  addRule('input[type=range].styled-slider::-ms-thumb:active',
+    ['background', inputs.handle.active.background.value],
+    ['border-color', inputs.handle.active.borderColor.value]
+  );
+
+  addRule('input[type=range].styled-slider:active::-ms-track',
+    ['background', inputs.track.active.background.value],
+    ['border-color', inputs.track.active.borderColor.value]
+  );
 
   const trackBorderWidth = inputs.track.border.value == 'none' ? '0' : decomposeStyle(`border: ${inputs.track.border.value};`, [
     'border-top-width',
@@ -980,16 +988,17 @@ input[type=range].styled-slider:active::-ms-track {
   border-right-width: 0;
 }
 
-input[type=range].styled-slider.slider-progress:hover::-ms-fill-lower {
-  background: ${inputs.progress.hover.background.value};
-  border-color: ${inputs.track.hover.borderColor.value};
-}
-
-input[type=range].styled-slider.slider-progress:active::-ms-fill-lower {
-  background: ${inputs.progress.active.background.value};
-  border-color: ${inputs.track.active.borderColor.value};
-}
 `;
+
+  addRule('input[type=range].styled-slider.slider-progress:hover::-ms-fill-lower',
+    ['background', inputs.progress.hover.background.value],
+    ['border-color', inputs.track.hover.borderColor.value]
+  );
+
+  addRule('input[type=range].styled-slider.slider-progress:active::-ms-fill-lower',
+    ['background', inputs.progress.active.background.value],
+    ['border-color', inputs.track.active.borderColor.value]
+  );
 
   output.textContent = s;
 
