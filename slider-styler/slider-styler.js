@@ -179,7 +179,7 @@ function getEvaluatorWithHook(func, hook) {
   return hook === null ? func : (() => hook(func));
 }
 
-function addEventListeners(element, events, handler) {
+function addEventListeners(events, element, handler) {
   if (Array.isArray(events)) {
     for (let name of events)
       element.addEventListener(name, handler);
@@ -207,7 +207,7 @@ function setupValidation(rootSelector, property, rawInput, initialValidity = tru
     setValid(validityEvaluator());
   }
 
-  addEventListeners(rawInput, ['input', 'change'], checkValidity);
+  addEventListeners(['input', 'change'], rawInput, checkValidity);
 
   return setValid;
 }
@@ -275,13 +275,13 @@ function setupBackgroundSection(rootSelector, bg, hook = null) {
     else
       bgPickr2.disable();
   };
-  addEventListeners(checkbox, ['change', 'input'], handler);
+  addEventListeners(['change', 'input'], checkbox, handler);
 
   return new RawInput(rawBackground, updateRawBackground);
 }
 
 function getVisibilityCheckbox(rootSelector) {
-  const checkboxSelector = rootSelector + ' input[type="checkbox"].controlVisibility';
+  const checkboxSelector = rootSelector + ' input[type="checkbox"].visibilityControl';
   const checkbox = document.querySelector(checkboxSelector);
   if (checkbox === null)
     throw new Error('Can\'t find ' + checkboxSelector);
@@ -384,7 +384,7 @@ function setupBorderSection(rootSelector, border, hook = null) {
   }
 
   for (let e of [widthAmount, widthUnit])
-    addEventListeners(e, ['change', 'input'], updateRawBorder);
+    addEventListeners(['change', 'input'], e, updateRawBorder);
 
   borderPickr.on('change', updateRawBorder);
 
@@ -462,7 +462,7 @@ function setupLengthFieldSection(rootSelector, property, value, fieldNames, hook
   }
 
   for (let e of [amount, unit])
-    addEventListeners(e, ['change', 'input'], updateRawValue);
+    addEventListeners(['change', 'input'], e, updateRawValue);
 
   return new RawInput(raw, updateRawValue);
 }
@@ -576,7 +576,7 @@ function setupShadowSection(rootSelector, shadow) {
 
   shadowPickr.on('change', updateRawShadow);
   for (let e of [xAmount, xUnit, yAmount, yUnit, blurAmount, blurUnit, spreadAmount, spreadUnit]) {
-    addEventListeners(e, ['change', 'input'], updateRawShadow);
+    addEventListeners(['change', 'input'], e, updateRawShadow);
   }
 
   return new RawInput(rawShadow, updateRawShadow);
@@ -599,7 +599,7 @@ const inputs = {
           return value == '0' ? '' : value;
         },
         validation: (value, isValid) => {
-          return value == '0' ? true : isValid();
+          return value.length == 0 || value == '0' ? true : isValid();
         }
       }))
     })(),
@@ -647,6 +647,15 @@ const inputs = {
   }
 };
 
+const cssBlock = document.getElementById('generatedCssBlock');
+document.getElementById('stickCssBlockCheckbox').addEventListener('change', function () {
+  if (this.checked)
+    cssBlock.classList.add('stickyCssBlock');
+  else
+    cssBlock.classList.remove('stickyCssBlock');
+});
+
+const examples = document.getElementById('examples');
 
 const output = document.getElementById('styleDisplay');
 
@@ -1003,6 +1012,8 @@ input[type=range].styled-slider::-ms-track {
   output.textContent = s;
 
   styleElement.innerHTML = s;
+
+  examples.style.top = `min(0px,calc(20% - ${examples.getBoundingClientRect().height}px))`;
 }
 generateStyles();
 
@@ -1027,7 +1038,7 @@ function generateStylesThrottled() {
 }
 
 for (let e of rawInputs) {
-  addEventListeners(e.input, ['change', 'input', 'valueChanged'], generateStylesThrottled);
+  addEventListeners(['change', 'input', 'valueChanged'], e.input, generateStylesThrottled);
 }
 
 function setupCopyButton(button, element) {

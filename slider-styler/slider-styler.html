@@ -44,7 +44,7 @@
 
     .note {
       color: #222;
-      font-size: 0.8em;
+      font-size: 0.9em;
     }
 
     .notePanel {
@@ -158,12 +158,17 @@
       vertical-align: middle;
     }
 
-    input.controlVisibility:not(:checked) ~ .hidden {
+    input.visibilityControl:not(:checked) ~ .hidden {
       display: none;
     }
 
-    input.controlVisibility:not(:checked) ~ .invisible {
+    input.visibilityControl:not(:checked) ~ .invisible {
       visibility: hidden;
+    }
+
+    .stickyCssBlock {
+      position: sticky;
+      top: 20%;
     }
 
     .copyButton {
@@ -260,9 +265,9 @@
         </div>
       </div>
     </div>
-    <div style="position: sticky; top: 0; z-index: 9000;">
+    <div id="examples" style="position: sticky; top: 0; z-index: 9000; pointer-events: none;">
       <div style="background: white;">
-        <div id="examples" class="notQuite100Percent">
+        <div class="notQuite100Percent">
           <div>
             Styled sliders:<br />
             <div class="example" style="display: inline-block;">
@@ -283,19 +288,16 @@
           </div>
         </div>
       </div>
-      <div style="height: 1em; background: linear-gradient(white, #fff0);"></div>
+      <div style="height: 1em; background: linear-gradient(white, #fff0); pointer-events: none;"></div>
     </div>
 
-    <div style="display: inline-block; min-width: 40em;">
+    <div style="display: inline-block; width: 100%; min-width: 30em; max-width: 40em; ">
       <!--element height section-->
       <div id="element" class="group">
         <h3><code>&lt;input&gt;</code> element itself</h3>
 
         <!--height section-->
-        <div id="height"
-             class="subgroup"
-             title="Set to zero or empty value to keep the default height.
-Otherwise set to desired height, e.g. slightly larger than the largest of handle and track.">
+        <div id="height" class="subgroup">
           <label>
             <strong>Height:</strong>
             <input id="height" type="number" value="0" min="0" />
@@ -304,13 +306,16 @@ Otherwise set to desired height, e.g. slightly larger than the largest of handle
             <option selected>px</option>
             <option>em</option>
           </select>
-          <span style="color: gray; margin-left: 1em">set to zero (empty, not defined) to keep the default</span>
           <div class="subgroup raw validationDisplay">
             <label class="flexVCentered">
               height:
               <input id="rawHeight" type="text" placeholder="not defined" class="grow1" />
             </label>
           </div>
+          <span class="note">
+            Set to desired height, e.g. slightly larger than the largest height of handle and track.<br />
+            Otherwise set to zero or empty value to keep the default height defined by browser.
+          </span>
         </div>
       </div>
 
@@ -340,7 +345,7 @@ Otherwise set to desired height, e.g. slightly larger than the largest of handle
 
           <!-- :hover section -->
           <div id="hover" class="subgroupBorder">
-            <input id="handleBackgroundHoverCheckbox" type="checkbox" class="controlVisibility" /><label class="code" for="handleBackgroundHoverCheckbox">:hover</label>
+            <input id="handleBackgroundHoverCheckbox" type="checkbox" class="visibilityControl" /><label class="code" for="handleBackgroundHoverCheckbox">:hover</label>
             <div class="colorPickerContainer invisible">
               <div class="colorPicker"><div id="backgroundColor"></div></div>
               <label title="use gradient">
@@ -359,7 +364,7 @@ Otherwise set to desired height, e.g. slightly larger than the largest of handle
 
           <!-- :active section -->
           <div id="active" class="subgroupBorder">
-            <input id="handleBackgroundActiveCheckbox" type="checkbox" class="controlVisibility" /><label class="code" for="handleBackgroundActiveCheckbox">:active</label>
+            <input id="handleBackgroundActiveCheckbox" type="checkbox" class="visibilityControl" /><label class="code" for="handleBackgroundActiveCheckbox">:active</label>
             <div class="colorPickerContainer invisible">
               <div class="colorPicker"><div id="backgroundColor"></div></div>
               <label title="use gradient">
@@ -456,7 +461,7 @@ Otherwise set to desired height, e.g. slightly larger than the largest of handle
 
           <!-- :hover section -->
           <div id="hover" class="subgroupBorder">
-            <input id="handleBorderColorHoverCheckbox" type="checkbox" class="controlVisibility" /><label class="code" for="handleBorderColorHoverCheckbox">:hover</label>
+            <input id="handleBorderColorHoverCheckbox" type="checkbox" class="visibilityControl" /><label class="code" for="handleBorderColorHoverCheckbox">:hover</label>
             <div class="colorPickerContainer invisible"><div id="borderColor"></div></div>
             <div class="subgroup raw validationDisplay hidden">
               <label class="flexVCentered">
@@ -468,7 +473,7 @@ Otherwise set to desired height, e.g. slightly larger than the largest of handle
 
           <!-- :active section -->
           <div id="active" class="subgroupBorder">
-            <input id="handleBorderColorActiveCheckbox" type="checkbox" class="controlVisibility" /><label class="code" for="handleBorderColorActiveCheckbox">:active</label>
+            <input id="handleBorderColorActiveCheckbox" type="checkbox" class="visibilityControl" /><label class="code" for="handleBorderColorActiveCheckbox">:active</label>
             <div class="colorPickerContainer invisible"><div id="borderColor"></div></div>
             <div class="subgroup raw validationDisplay hidden">
               <label class="flexVCentered">
@@ -550,7 +555,7 @@ Otherwise set to desired height, e.g. slightly larger than the largest of handle
 
           <!-- :hover section -->
           <div id="hover" class="subgroupBorder">
-            <input id="trackBackgroundHoverCheckbox" type="checkbox" class="controlVisibility" /><label class="code" for="trackBackgroundHoverCheckbox">:hover</label>
+            <input id="trackBackgroundHoverCheckbox" type="checkbox" class="visibilityControl" /><label class="code" for="trackBackgroundHoverCheckbox">:hover</label>
             <div class="colorPickerContainer invisible">
               <div class="colorPicker"><div id="backgroundColor"></div></div>
               <label title="use gradient">
@@ -569,7 +574,7 @@ Otherwise set to desired height, e.g. slightly larger than the largest of handle
 
           <!-- :active section -->
           <div id="active" class="subgroupBorder">
-            <input id="trackBackgroundActiveCheckbox" type="checkbox" class="controlVisibility" /><label class="code" for="trackBackgroundActiveCheckbox">:active</label>
+            <input id="trackBackgroundActiveCheckbox" type="checkbox" class="visibilityControl" /><label class="code" for="trackBackgroundActiveCheckbox">:active</label>
             <div class="colorPickerContainer invisible">
               <div class="colorPicker"><div id="backgroundColor"></div></div>
               <label title="use gradient">
@@ -647,7 +652,7 @@ Otherwise set to desired height, e.g. slightly larger than the largest of handle
 
           <!-- :hover section -->
           <div id="hover" class="subgroupBorder">
-            <input id="trackBorderColorHoverCheckbox" type="checkbox" class="controlVisibility" /><label class="code" for="trackBorderColorHoverCheckbox">:hover</label>
+            <input id="trackBorderColorHoverCheckbox" type="checkbox" class="visibilityControl" /><label class="code" for="trackBorderColorHoverCheckbox">:hover</label>
             <div class="colorPickerContainer invisible"><div id="borderColor"></div></div>
             <div class="subgroup raw validationDisplay hidden">
               <label class="flexVCentered">
@@ -659,7 +664,7 @@ Otherwise set to desired height, e.g. slightly larger than the largest of handle
 
           <!-- :active section -->
           <div id="active" class="subgroupBorder">
-            <input id="trackBorderColorActiveCheckbox" type="checkbox" class="controlVisibility" /><label class="code" for="trackBorderColorActiveCheckbox">:active</label>
+            <input id="trackBorderColorActiveCheckbox" type="checkbox" class="visibilityControl" /><label class="code" for="trackBorderColorActiveCheckbox">:active</label>
             <div class="colorPickerContainer invisible"><div id="borderColor"></div></div>
             <div class="subgroup raw validationDisplay hidden">
               <label class="flexVCentered">
@@ -741,7 +746,7 @@ Otherwise set to desired height, e.g. slightly larger than the largest of handle
 
           <!-- :hover section -->
           <div id="hover" class="subgroupBorder">
-            <input id="progressBackgroundHoverCheckbox" type="checkbox" class="controlVisibility" /><label class="code" for="progressBackgroundHoverCheckbox">:hover</label>
+            <input id="progressBackgroundHoverCheckbox" type="checkbox" class="visibilityControl" /><label class="code" for="progressBackgroundHoverCheckbox">:hover</label>
             <div class="colorPickerContainer invisible">
               <div class="colorPicker"><div id="backgroundColor"></div></div>
               <label title="use gradient">
@@ -760,7 +765,7 @@ Otherwise set to desired height, e.g. slightly larger than the largest of handle
 
           <!-- :active section -->
           <div id="active" class="subgroupBorder">
-            <input id="progressBackgroundActiveCheckbox" type="checkbox" class="controlVisibility" /><label class="code" for="progressBackgroundActiveCheckbox">:active</label>
+            <input id="progressBackgroundActiveCheckbox" type="checkbox" class="visibilityControl" /><label class="code" for="progressBackgroundActiveCheckbox">:active</label>
             <div class="colorPickerContainer invisible">
               <div class="colorPicker"><div id="backgroundColor"></div></div>
               <label title="use gradient">
@@ -779,7 +784,8 @@ Otherwise set to desired height, e.g. slightly larger than the largest of handle
         </div>
       </div>
     </div>
-    <div style="display: inline-block; vertical-align: top; width: 50em; margin-bottom: 1em;">
+    <div id="generatedCssBlock" style="display: inline-block; vertical-align: top; width: 100%; max-width: 50em; margin-bottom: 1em;">
+      <label style="float: right;"><input id="stickCssBlockCheckbox" type="checkbox" /> pin</label>
       <span id="download">CSS</span>:
       <button id="copyCssButton" class="copyButton"><span class="copyIcon">copy</span></button>
       <a id="downloadCssLink" href="javascript:void(0)">download</a>
@@ -801,9 +807,9 @@ Otherwise set to desired height, e.g. slightly larger than the largest of handle
     <p><strong>Some more details</strong></p>
     <p>
       For progress indication to work, you need to add a script to your page, see <a href="#download">above</a>.
-      You can dowload, put it to your assets and add it as external script:
+      You can dowload, put it to your assets, and add it as external script:
     </p>
-    <pre class="codeContainer">&lt;script src="range-input.js"&gt;&lt;/script&gt;</pre>
+    <pre class="codeContainer" style="display: inline-block;">&lt;script src="range-input.js"&gt;&lt;/script&gt;</pre>
     <p>
       or just copy-paste the contents right inside the <code>&lt;script&gt;</code> element.<br />
       The idea is borrowed from
@@ -826,10 +832,10 @@ Otherwise set to desired height, e.g. slightly larger than the largest of handle
   <div class="credits">
     <div class="notQuite100Percent" style="text-align:center; margin: 2em 0 1em 0;">
       View source code on <a class="no-external-link-icon" href="https://github.com/toughengineer/demo/tree/main/slider-styler" target="_blank"><img class="icon" src="/demo/mark-github.svg" /> GitHub</a>
-      (Not recommended for sanity sake.) &#xFF5C;
+      <span class="note">(Not recommended for sanity sake.)</span> &#xFF5C;
       <a class="no-external-link-icon" href="https://github.com/Simonwep/pickr" target="_blank">Color picker</a> by <a class="no-external-link-icon" href="https://github.com/Simonwep" target="_blank">Simonwep</a> &#xFF5C;
       <a class="no-external-link-icon" href="https://icons8.com/icon/43738/external-link" target="_blank">External Link icon by Icons8</a><br />
-      These links will open in new tabs.
+      <span class="note">These links will open in new tabs.</span>
     </div>
   </div>
   <script src="https://cdn.jsdelivr.net/npm/@simonwep/pickr/dist/pickr.es5.min.js"></script>
