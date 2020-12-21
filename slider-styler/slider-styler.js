@@ -648,7 +648,7 @@ const inputs = {
 };
 
 
-const output = document.querySelector('#styleDisplay');
+const output = document.getElementById('styleDisplay');
 
 const styleElement = document.getElementById('styleElement');
 
@@ -744,11 +744,11 @@ input[type=range].styled-slider.slider-progress {
   --sx: calc(0.5 * ${handleWidth} + var(--ratio) * (100% - ${handleWidth}));
 }
 
-/*webkit*/
 input[type=range].styled-slider:focus {
   outline: none;
 }
 
+/*webkit*/
 input[type=range].styled-slider::-webkit-slider-thumb {
   width: ${handleWidth};
   height: ${handleHeight};
@@ -1030,6 +1030,33 @@ for (let e of rawInputs) {
   addEventListeners(e.input, ['change', 'input', 'valueChanged'], generateStylesThrottled);
 }
 
+function setupCopyButton(button, element) {
+  const onFail = (e) => {
+    button.classList.add('not-copied');
+    void button.offsetWidth; // triggers animation transitions
+    button.classList.remove('not-copied');
+    console.log('Failed to copy to clipboard: ', e);
+  };
+  button.addEventListener('click', (event) => {
+    try {
+      navigator.clipboard.writeText(element.textContent)
+        .then(
+          () => {
+            button.classList.add('copied');
+            void button.offsetWidth; // triggers animation transitions
+            button.classList.remove('copied');
+          },
+          onFail
+        );
+    }
+    catch (e) {
+      onFail(e.message);
+    }
+  });
+}
+
+setupCopyButton(document.getElementById('copyCssButton'), output);
+
 document.getElementById('downloadCssLink').onclick = () => {
   const element = document.createElement('a');
   element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(styleElement.textContent));
@@ -1042,3 +1069,5 @@ document.getElementById('downloadCssLink').onclick = () => {
 
   document.body.removeChild(element);
 };
+
+setupCopyButton(document.getElementById('copyJSButton'), document.getElementById('scriptDisplay'));

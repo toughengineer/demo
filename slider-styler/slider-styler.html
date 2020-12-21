@@ -149,6 +149,15 @@
       margin: 0 0.5em 0 0.5em;
     }
 
+      .colorPicker button {
+        box-shadow: 0 0 1px 1px #ddd;
+      }
+
+    .colorPickerContainer {
+      display: inline-block;
+      vertical-align: middle;
+    }
+
     input.controlVisibility:not(:checked) ~ .hidden {
       display: none;
     }
@@ -157,9 +166,44 @@
       visibility: hidden;
     }
 
+    .copyButton {
+      background-color: #efefef;
+      border: 1px solid black;
+      border-radius: 0.3em;
+      transition: background-color 0.5s;
+    }
+
+      .copyButton.copied {
+        background-color: #0c0;
+        transition: background-color 0s;
+      }
+
+      .copyButton.not-copied {
+        background-color: #e55;
+        transition: background-color 0s;
+      }
+
+    .copyIcon::before {
+      content: "";
+      width: 1em;
+      height: 1em;
+      background: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgd2lkdGg9IjI0Ij48cGF0aCBkPSJNMCAwaDI0djI0SDBWMHoiIGZpbGw9Im5vbmUiLz48cGF0aCBkPSJNMTUgMUg0Yy0xLjEgMC0yIC45LTIgMnYxM2MwIC41NS40NSAxIDEgMXMxLS40NSAxLTFWNGMwLS41NS40NS0xIDEtMWgxMGMuNTUgMCAxLS40NSAxLTFzLS40NS0xLTEtMXptNCA0SDhjLTEuMSAwLTIgLjktMiAydjE0YzAgMS4xLjkgMiAyIDJoMTFjMS4xIDAgMi0uOSAyLTJWN2MwLTEuMS0uOS0yLTItMnptLTEgMTZIOWMtLjU1IDAtMS0uNDUtMS0xVjhjMC0uNTUuNDUtMSAxLTFoOWMuNTUgMCAxIC40NSAxIDF2MTJjMCAuNTUtLjQ1IDEtMSAxeiIvPjwvc3ZnPg==) no-repeat;
+      background-size: contain;
+      margin-right: 0.1em;
+      display: inline-block;
+      vertical-align: text-bottom;
+    }
+
+    textarea {
+      font-size: 1em;
+      resize: none;
+    }
+
     .codeContainer {
+      display: block;
       border: 1px solid #ccc;
       padding: 0.5em;
+      margin: 0.25em 0 0.25em 0;
       box-shadow: 0 0 0.5em #eee;
       overflow: auto;
       font-family: Courier, monospace;
@@ -245,10 +289,13 @@
     <div style="display: inline-block; min-width: 40em;">
       <!--element height section-->
       <div id="element" class="group">
-        <h3>element height</h3>
+        <h3><code>&lt;input&gt;</code> element itself</h3>
 
         <!--height section-->
-        <div id="height" class="subgroup">
+        <div id="height"
+             class="subgroup"
+             title="Set to zero or empty value to keep the default height.
+Otherwise set to desired height, e.g. slightly larger than the largest of handle and track.">
           <label>
             <strong>Height:</strong>
             <input id="height" type="number" value="0" min="0" />
@@ -294,7 +341,7 @@
           <!-- :hover section -->
           <div id="hover" class="subgroupBorder">
             <input id="handleBackgroundHoverCheckbox" type="checkbox" class="controlVisibility" /><label class="code" for="handleBackgroundHoverCheckbox">:hover</label>
-            <div class="colorPicker invisible">
+            <div class="colorPickerContainer invisible">
               <div class="colorPicker"><div id="backgroundColor"></div></div>
               <label title="use gradient">
                 gradient
@@ -313,7 +360,7 @@
           <!-- :active section -->
           <div id="active" class="subgroupBorder">
             <input id="handleBackgroundActiveCheckbox" type="checkbox" class="controlVisibility" /><label class="code" for="handleBackgroundActiveCheckbox">:active</label>
-            <div class="colorPicker invisible">
+            <div class="colorPickerContainer invisible">
               <div class="colorPicker"><div id="backgroundColor"></div></div>
               <label title="use gradient">
                 gradient
@@ -410,7 +457,7 @@
           <!-- :hover section -->
           <div id="hover" class="subgroupBorder">
             <input id="handleBorderColorHoverCheckbox" type="checkbox" class="controlVisibility" /><label class="code" for="handleBorderColorHoverCheckbox">:hover</label>
-            <div class="colorPicker invisible"><div id="borderColor"></div></div>
+            <div class="colorPickerContainer invisible"><div id="borderColor"></div></div>
             <div class="subgroup raw validationDisplay hidden">
               <label class="flexVCentered">
                 border-color:
@@ -422,7 +469,7 @@
           <!-- :active section -->
           <div id="active" class="subgroupBorder">
             <input id="handleBorderColorActiveCheckbox" type="checkbox" class="controlVisibility" /><label class="code" for="handleBorderColorActiveCheckbox">:active</label>
-            <div class="colorPicker invisible"><div id="borderColor"></div></div>
+            <div class="colorPickerContainer invisible"><div id="borderColor"></div></div>
             <div class="subgroup raw validationDisplay hidden">
               <label class="flexVCentered">
                 border-color:
@@ -504,7 +551,7 @@
           <!-- :hover section -->
           <div id="hover" class="subgroupBorder">
             <input id="trackBackgroundHoverCheckbox" type="checkbox" class="controlVisibility" /><label class="code" for="trackBackgroundHoverCheckbox">:hover</label>
-            <div class="colorPicker invisible">
+            <div class="colorPickerContainer invisible">
               <div class="colorPicker"><div id="backgroundColor"></div></div>
               <label title="use gradient">
                 gradient
@@ -523,7 +570,7 @@
           <!-- :active section -->
           <div id="active" class="subgroupBorder">
             <input id="trackBackgroundActiveCheckbox" type="checkbox" class="controlVisibility" /><label class="code" for="trackBackgroundActiveCheckbox">:active</label>
-            <div class="colorPicker invisible">
+            <div class="colorPickerContainer invisible">
               <div class="colorPicker"><div id="backgroundColor"></div></div>
               <label title="use gradient">
                 gradient
@@ -601,7 +648,7 @@
           <!-- :hover section -->
           <div id="hover" class="subgroupBorder">
             <input id="trackBorderColorHoverCheckbox" type="checkbox" class="controlVisibility" /><label class="code" for="trackBorderColorHoverCheckbox">:hover</label>
-            <div class="colorPicker invisible"><div id="borderColor"></div></div>
+            <div class="colorPickerContainer invisible"><div id="borderColor"></div></div>
             <div class="subgroup raw validationDisplay hidden">
               <label class="flexVCentered">
                 border-color:
@@ -613,7 +660,7 @@
           <!-- :active section -->
           <div id="active" class="subgroupBorder">
             <input id="trackBorderColorActiveCheckbox" type="checkbox" class="controlVisibility" /><label class="code" for="trackBorderColorActiveCheckbox">:active</label>
-            <div class="colorPicker invisible"><div id="borderColor"></div></div>
+            <div class="colorPickerContainer invisible"><div id="borderColor"></div></div>
             <div class="subgroup raw validationDisplay hidden">
               <label class="flexVCentered">
                 border-color:
@@ -695,7 +742,7 @@
           <!-- :hover section -->
           <div id="hover" class="subgroupBorder">
             <input id="progressBackgroundHoverCheckbox" type="checkbox" class="controlVisibility" /><label class="code" for="progressBackgroundHoverCheckbox">:hover</label>
-            <div class="colorPicker invisible">
+            <div class="colorPickerContainer invisible">
               <div class="colorPicker"><div id="backgroundColor"></div></div>
               <label title="use gradient">
                 gradient
@@ -714,7 +761,7 @@
           <!-- :active section -->
           <div id="active" class="subgroupBorder">
             <input id="progressBackgroundActiveCheckbox" type="checkbox" class="controlVisibility" /><label class="code" for="progressBackgroundActiveCheckbox">:active</label>
-            <div class="colorPicker invisible">
+            <div class="colorPickerContainer invisible">
               <div class="colorPicker"><div id="backgroundColor"></div></div>
               <label title="use gradient">
                 gradient
@@ -733,10 +780,15 @@
       </div>
     </div>
     <div style="display: inline-block; vertical-align: top; width: 50em; margin-bottom: 1em;">
-      <span id="download-section">CSS</span>: <button id="copyCssButton" class="copyButton">copy</button> <a id="downloadCssLink" href="javascript:void(0)">download</a>
-      <div id="styleDisplay" class="codeContainer" style="height: 70%; margin-bottom: 1em;">change some styles</div>
-      JS for progress tracking: <button id="copyJSButton" class="copyButton">copy</button> <a class="no-external-link-icon" href="range-input.js" download target="_blank">download</a>
-      <pre id="scriptDisplay" class="codeContainer" style="margin: 0;">for (let e of document.querySelectorAll('input[type="range"].slider-progress')) {
+      <span id="download">CSS</span>:
+      <button id="copyCssButton" class="copyButton"><span class="copyIcon">copy</span></button>
+      <a id="downloadCssLink" href="javascript:void(0)">download</a>
+      <textarea id="styleDisplay" class="codeContainer" style="height: 70%; width: 100%; margin-bottom: 1em;" readonly>change some styles</textarea>
+
+      JS for progress tracking:
+      <button id="copyJSButton" class="copyButton"><span class="copyIcon">copy</span></button>
+      <a class="no-external-link-icon" href="range-input.js" download target="_blank">download</a>
+      <pre id="scriptDisplay" class="codeContainer">for (let e of document.querySelectorAll('input[type="range"].slider-progress')) {
   e.style.setProperty('--value', e.value);
   e.style.setProperty('--min', e.min == '' ? '0' : e.min);
   e.style.setProperty('--max', e.max == '' ? '100' : e.max);
@@ -748,7 +800,7 @@
   <div id="explanation" class="textblock notQuite100Percent">
     <p><strong>Some more details</strong></p>
     <p>
-      For progress indication to work, you need to add a script to your page, see <a href="#download-section">above</a>.
+      For progress indication to work, you need to add a script to your page, see <a href="#download">above</a>.
       You can dowload, put it to your assets and add it as external script:
     </p>
     <pre class="codeContainer">&lt;script src="range-input.js"&gt;&lt;/script&gt;</pre>
@@ -756,6 +808,9 @@
       or just copy-paste the contents right inside the <code>&lt;script&gt;</code> element.<br />
       The idea is borrowed from
       <a href="https://css-tricks.com/sliding-nightmare-understanding-range-input/#the-range-progress-fill-component" target="_blank"><em>this great article</em></a>.
+    </p>
+    <p>
+      TODO: figure out how to neatly display focus outline. Currently it looks ugly as fuck, that's why it is disabled.
     </p>
     <p>
       Handle may be one pixel off center with respect to track. You'll have to wangjangle with it a bit.<br />
