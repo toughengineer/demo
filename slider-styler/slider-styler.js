@@ -1,4 +1,4 @@
-const version = '20201221';
+const version = '20201222';
 
 const defaultSetup = {
   element: {
@@ -828,8 +828,8 @@ input[type=range].styled-slider::-webkit-slider-runnable-track {
   const trackHoverNormalBg = valueOrDefault(inputs.track.hover.background.value, inputs.track.background.value);
 
   let trackProgressHoverBg = inputs.progress.hover.background.value;
-  if (trackProgressHoverBg.length != 0) {
-    trackProgressHoverBg = makeGradientIfNeeded(trackProgressHoverBg);
+  if (trackProgressHoverBg.length != 0 || inputs.track.hover.background.value.length != 0) {
+    trackProgressHoverBg = makeGradientIfNeeded(valueOrDefault(trackProgressHoverBg, inputs.progress.background.value));
 
     s +=
       `input[type=range].styled-slider.slider-progress:hover::-webkit-slider-runnable-track {
@@ -842,8 +842,8 @@ input[type=range].styled-slider::-webkit-slider-runnable-track {
   const trackActiveNormalBg = valueOrDefault(inputs.track.active.background.value, trackHoverNormalBg);
 
   let trackProgressActiveBg = inputs.progress.active.background.value;
-  if (trackProgressActiveBg.length != 0) {
-    trackProgressActiveBg = makeGradientIfNeeded(trackProgressActiveBg);
+  if (trackProgressActiveBg.length != 0 || inputs.track.active.background.value.length != 0) {
+    trackProgressActiveBg = makeGradientIfNeeded(valueOrDefault(trackProgressActiveBg, trackProgressHoverBg));
 
     s +=
       `input[type=range].styled-slider.slider-progress:active::-webkit-slider-runnable-track {
@@ -1041,7 +1041,8 @@ for (let e of rawInputs) {
   addEventListeners(['change', 'input', 'valueChanged'], e.input, generateStylesThrottled);
 }
 
-function setupCopyButton(button, element) {
+function setupCopyButton(buttonID, element) {
+  const button = document.getElementById(buttonID);
   const onFail = (e) => {
     button.classList.add('not-copied');
     void button.offsetWidth; // triggers animation transitions
@@ -1066,7 +1067,10 @@ function setupCopyButton(button, element) {
   });
 }
 
-setupCopyButton(document.getElementById('copyCssButton'), output);
+setupCopyButton('copyClassStyledSliderButton', document.getElementById('classStyledSlider'));
+setupCopyButton('copyClassStyledSliderProgressButton', document.getElementById('classStyledSliderProgress'));
+
+setupCopyButton('copyCssButton', output);
 
 document.getElementById('downloadCssLink').onclick = () => {
   const element = document.createElement('a');
@@ -1081,4 +1085,4 @@ document.getElementById('downloadCssLink').onclick = () => {
   document.body.removeChild(element);
 };
 
-setupCopyButton(document.getElementById('copyJSButton'), document.getElementById('scriptDisplay'));
+setupCopyButton('copyJSButton', document.getElementById('scriptDisplay'));

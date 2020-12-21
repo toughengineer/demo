@@ -74,6 +74,7 @@
 
     .example {
       border: 0.5em solid #f5f5f5;
+      vertical-align: middle;
     }
 
     .group {
@@ -173,10 +174,17 @@
 
     .copyButton {
       background-color: #efefef;
+      margin-left: 0.3em;
+      margin-right: 0.3em;
       border: 1px solid black;
       border-radius: 0.3em;
       transition: background-color 0.5s;
+      opacity: 0.5;
     }
+
+      .copyButton:hover {
+        opacity: 1;
+      }
 
       .copyButton.copied {
         background-color: #0c0;
@@ -197,6 +205,10 @@
       margin-right: 0.1em;
       display: inline-block;
       vertical-align: text-bottom;
+    }
+
+    input:not(:checked) ~ .pinIcon {
+      opacity: 0.5;
     }
 
     textarea {
@@ -240,10 +252,15 @@
     </p>
     <div class="notePanel">
       <p>
-        Read <a href="https://css-tricks.com/sliding-nightmare-understanding-range-input/" target="_blank"><em>this great article</em></a>
+        Read <a href="https://css-tricks.com/sliding-nightmare-understanding-range-input/"
+                title="A Sliding Nightmare: Understanding the Range Input"
+                target="_blank"><em>this great article</em></a>
         if you want to know how <code>&lt;input&gt;</code> range CSS styling works under the hood.<br />
         It's a shame that in 2020 styling of sliders is not yet standardized.
-        Here is <a href="https://github.com/w3c/csswg-drafts/issues/4410" target="_blank">a proposal</a> for standardization that I know of.
+        Here is
+        <a href="https://github.com/w3c/csswg-drafts/issues/4410"
+           title="[css-pseudo-4] Standardizing input[type=&quot;range&quot;] styling"
+           target="_blank">a proposal</a> for standardization that I know of.
       </p>
     </div>
     <p>
@@ -265,14 +282,17 @@
         </div>
       </div>
     </div>
-    <div id="examples" style="position: sticky; top: 0; z-index: 9000;">
-      <div style="background: white;">
+    <div id="examples" style="position: sticky; top: 0; z-index: 9000;  pointer-events: none;">
+      <div style="background: white;  pointer-events: auto;">
         <div class="notQuite100Percent">
           <div>
             Styled sliders:<br />
             <div class="example" style="display: inline-block;">
               <input id="slider" class="styled-slider" type="range" />
             </div>
+            <span class="note" style="margin-left: 1em;">use</span>
+            <span id="classStyledSlider" class="code">class="styled-slider"</span>
+            <button id="copyClassStyledSliderButton" class="copyButton" title="Copy class attribute."><span class="copyIcon">copy</span></button>
             <div class="example">
               <input id="longSlider" class="styled-slider" type="range" style="width:100%;" />
             </div>
@@ -282,13 +302,16 @@
             <div class="example" style="display: inline-block;">
               <input id="progressSlider" class="styled-slider slider-progress" type="range" />
             </div>
+            <span class="note" style="margin-left: 1em;">use</span>
+            <span id="classStyledSliderProgress" class="code">class="styled-slider slider-progress"</span>
+            <button id="copyClassStyledSliderProgressButton" class="copyButton" title="Copy class attribute."><span class="copyIcon">copy</span></button>
             <div class="example">
               <input id="longProgressSlider" class="styled-slider slider-progress" type="range" style="width:100%;" />
             </div>
           </div>
         </div>
       </div>
-      <div style="height: 1em; background: linear-gradient(white, #fff0);"></div>
+      <div style="height: 1em; background: linear-gradient(white, #fff0);  pointer-events: none;"></div>
     </div>
 
     <div style="display: inline-block; width: 100%; min-width: 30em; max-width: 40em; ">
@@ -330,7 +353,7 @@
           <div id="normal" class="subgroup">
             <label><strong>Background:</strong></label>
             <div class="colorPicker"><div id="backgroundColor"></div></div>
-            <label title="use gradient">
+            <label title="Check to use gradient.">
               gradient
               <input id="gradientCheckbox" type="checkbox" />
             </label>
@@ -348,7 +371,7 @@
             <input id="handleBackgroundHoverCheckbox" type="checkbox" class="visibilityControl" /><label class="code" for="handleBackgroundHoverCheckbox">:hover</label>
             <div class="colorPickerContainer invisible">
               <div class="colorPicker"><div id="backgroundColor"></div></div>
-              <label title="use gradient">
+              <label title="Check to use gradient.">
                 gradient
                 <input id="gradientCheckbox" type="checkbox" />
               </label>
@@ -367,7 +390,7 @@
             <input id="handleBackgroundActiveCheckbox" type="checkbox" class="visibilityControl" /><label class="code" for="handleBackgroundActiveCheckbox">:active</label>
             <div class="colorPickerContainer invisible">
               <div class="colorPicker"><div id="backgroundColor"></div></div>
-              <label title="use gradient">
+              <label title="Check to use gradient.">
                 gradient
                 <input id="gradientCheckbox" type="checkbox" />
               </label>
@@ -540,7 +563,7 @@
           <div id="normal" class="subgroup">
             <label><strong>Background:</strong></label>
             <div class="colorPicker"><div id="backgroundColor"></div></div>
-            <label title="use gradient">
+            <label title="Check to use gradient.">
               gradient
               <input id="gradientCheckbox" type="checkbox" />
             </label>
@@ -558,7 +581,7 @@
             <input id="trackBackgroundHoverCheckbox" type="checkbox" class="visibilityControl" /><label class="code" for="trackBackgroundHoverCheckbox">:hover</label>
             <div class="colorPickerContainer invisible">
               <div class="colorPicker"><div id="backgroundColor"></div></div>
-              <label title="use gradient">
+              <label title="Check to use gradient.">
                 gradient
                 <input id="gradientCheckbox" type="checkbox" />
               </label>
@@ -577,7 +600,7 @@
             <input id="trackBackgroundActiveCheckbox" type="checkbox" class="visibilityControl" /><label class="code" for="trackBackgroundActiveCheckbox">:active</label>
             <div class="colorPickerContainer invisible">
               <div class="colorPicker"><div id="backgroundColor"></div></div>
-              <label title="use gradient">
+              <label title="Check to use gradient.">
                 gradient
                 <input id="gradientCheckbox" type="checkbox" />
               </label>
@@ -731,7 +754,7 @@
           <div id="normal" class="subgroup">
             <label><strong>Background:</strong></label>
             <div class="colorPicker"><div id="backgroundColor"></div></div>
-            <label title="use gradient">
+            <label title="Check to use gradient.">
               gradient
               <input id="gradientCheckbox" type="checkbox" />
             </label>
@@ -749,7 +772,7 @@
             <input id="progressBackgroundHoverCheckbox" type="checkbox" class="visibilityControl" /><label class="code" for="progressBackgroundHoverCheckbox">:hover</label>
             <div class="colorPickerContainer invisible">
               <div class="colorPicker"><div id="backgroundColor"></div></div>
-              <label title="use gradient">
+              <label title="Check to use gradient.">
                 gradient
                 <input id="gradientCheckbox" type="checkbox" />
               </label>
@@ -768,7 +791,7 @@
             <input id="progressBackgroundActiveCheckbox" type="checkbox" class="visibilityControl" /><label class="code" for="progressBackgroundActiveCheckbox">:active</label>
             <div class="colorPickerContainer invisible">
               <div class="colorPicker"><div id="backgroundColor"></div></div>
-              <label title="use gradient">
+              <label title="Check to use gradient.">
                 gradient
                 <input id="gradientCheckbox" type="checkbox" />
               </label>
@@ -785,15 +808,19 @@
       </div>
     </div>
     <div id="generatedCssBlock" style="display: inline-block; vertical-align: top; width: 100%; max-width: 50em; margin-bottom: 1em;">
-      <label style="float: right;"><input id="stickCssBlockCheckbox" type="checkbox" /> pin</label>
+      <label style="float: right;" title="Check to pin source code section on screen.">
+        <input id="stickCssBlockCheckbox" type="checkbox" />
+        pin
+        <span class="pinIcon">&#x1F4CC;</span>
+      </label>
       <span id="download">CSS</span>:
-      <button id="copyCssButton" class="copyButton"><span class="copyIcon">copy</span></button>
-      <a id="downloadCssLink" href="javascript:void(0)">download</a>
+      <a id="downloadCssLink" href="javascript:void(0)" title="Save generated CSS to your computer.">download</a>
+      <button id="copyCssButton" class="copyButton" title="Copy generated CSS to clipboard."><span class="copyIcon">copy</span></button>
       <textarea id="styleDisplay" class="codeContainer" style="height: 70%; width: 100%; margin-bottom: 1em;" readonly>change some styles</textarea>
 
       JS for progress tracking:
-      <button id="copyJSButton" class="copyButton"><span class="copyIcon">copy</span></button>
-      <a class="no-external-link-icon" href="range-input.js" download target="_blank">download</a>
+      <a class="no-external-link-icon" href="range-input.js" title="Download script." download target="_blank">download</a>
+      <button id="copyJSButton" class="copyButton" title="Copy script to clipboard."><span class="copyIcon">copy</span></button>
       <pre id="scriptDisplay" class="codeContainer">for (let e of document.querySelectorAll('input[type="range"].slider-progress')) {
   e.style.setProperty('--value', e.value);
   e.style.setProperty('--min', e.min == '' ? '0' : e.min);
@@ -813,7 +840,9 @@
     <p>
       or just copy-paste the contents right inside the <code>&lt;script&gt;</code> element.<br />
       The idea is borrowed from
-      <a href="https://css-tricks.com/sliding-nightmare-understanding-range-input/#the-range-progress-fill-component" target="_blank"><em>this great article</em></a>.
+      <a href="https://css-tricks.com/sliding-nightmare-understanding-range-input/#the-range-progress-fill-component"
+         title="A Sliding Nightmare: Understanding the Range Input"
+         target="_blank"><em>this great article</em></a>.
     </p>
     <p>
       TODO: figure out how to neatly display focus outline. Currently it looks ugly as fuck, that's why it is disabled.
@@ -824,7 +853,11 @@
       apparently elements don't like to be at fractional coordinates.
     </p>
     <p>
-      <code>border-box</code> <a href="https://developer.mozilla.org/ru/docs/Web/CSS/box-sizing" target="_blank">sizing model</a> is used for handle and track,
+      <code>border-box</code>
+      <a href="https://developer.mozilla.org/ru/docs/Web/CSS/box-sizing"
+         title="CSS: Cascading Style Sheets &mdash; box-sizing"
+         target="_blank">sizing model</a>
+      is used for handle and track,
       i.e. specified width and height are generally what you get regardless of the border width.
       (Unless border is dummy thick, but then jokes on you!)
     </p>
