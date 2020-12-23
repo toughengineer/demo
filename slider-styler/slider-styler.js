@@ -1,8 +1,8 @@
-const version = '20201222';
+const version = '20201223';
 
 const defaultSetup = {
   element: {
-    height: '0'
+    height: '2.2em'
   },
   handle: {
     background: {
@@ -1012,12 +1012,10 @@ input[type=range].styled-slider::-ms-track {
   output.textContent = s;
 
   styleElement.innerHTML = s;
-
-  examples.style.top = `min(0px,calc(20% - ${examples.getBoundingClientRect().height}px))`;
 }
 generateStyles();
 
-const throttlePeriod = 100;  // no more often than 50ms
+const throttlePeriod = 100;  // no more often than 100ms
 let nextUpdateTime = performance.now();
 let updateScheduled = false;
 
@@ -1067,8 +1065,8 @@ function setupCopyButton(buttonID, element) {
   });
 }
 
-setupCopyButton('copyClassStyledSliderButton', document.getElementById('classStyledSlider'));
-setupCopyButton('copyClassStyledSliderProgressButton', document.getElementById('classStyledSliderProgress'));
+setupCopyButton('copyStyledSliderButtonClass', document.getElementById('styledSliderClass'));
+setupCopyButton('copyStyledSliderProgressButtonClass', document.getElementById('styledSliderProgressClass'));
 
 setupCopyButton('copyCssButton', output);
 
