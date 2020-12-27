@@ -1,4 +1,4 @@
-const version = '20201223';
+const version = '20201227';
 
 const defaultSetup = {
   element: {
@@ -787,22 +787,32 @@ input[type=range].styled-slider::-webkit-slider-runnable-track {
       s += selector + ' {\n' + style + '}\n\n';
   }
 
+  const handleHoverBorderColor = inputs.handle.border.value == 'none' ? '' : inputs.handle.hover.borderColor.value;
+
   addRule('input[type=range].styled-slider::-webkit-slider-thumb:hover',
     ['background', inputs.handle.hover.background.value],
-    ['border-color', inputs.handle.hover.borderColor.value]
+    ['border-color', handleHoverBorderColor]
   );
+
+  const trackHoverBorderColor = inputs.track.border.value == 'none' ? '' : inputs.track.hover.borderColor.value;
+
   addRule('input[type=range].styled-slider:hover::-webkit-slider-runnable-track',
     ['background', inputs.track.hover.background.value],
-    ['border-color', inputs.track.hover.borderColor.value]
+    ['border-color', trackHoverBorderColor]
   );
+
+  const handleActiveBorderColor = inputs.handle.border.value == 'none' ? '' : inputs.handle.active.borderColor.value;
 
   addRule('input[type=range].styled-slider::-webkit-slider-thumb:active',
     ['background', inputs.handle.active.background.value],
-    ['border-color', inputs.handle.active.borderColor.value]
+    ['border-color', handleActiveBorderColor]
   );
+
+  const trackActiveBorderColor = inputs.track.border.value == 'none' ? '' : inputs.track.active.borderColor.value;
+
   addRule('input[type=range].styled-slider:active::-webkit-slider-runnable-track',
     ['background', inputs.track.active.background.value],
-    ['border-color', inputs.track.active.borderColor.value]
+    ['border-color', trackActiveBorderColor]
   );
 
   function makeGradientIfNeeded(background) {
@@ -885,20 +895,20 @@ input[type=range].styled-slider::-moz-range-track {
 
   addRule('input[type=range].styled-slider::-moz-range-thumb:hover',
     ['background', inputs.handle.hover.background.value],
-    ['border-color', inputs.handle.hover.borderColor.value]
+    ['border-color', handleHoverBorderColor]
   );
   addRule('input[type=range].styled-slider:hover::-moz-range-track',
     ['background', inputs.track.hover.background.value],
-    ['border-color', inputs.track.hover.borderColor.value]
+    ['border-color', trackHoverBorderColor]
   );
 
   addRule('input[type=range].styled-slider::-moz-range-thumb:active',
     ['background', inputs.handle.active.background.value],
-    ['border-color', inputs.handle.active.borderColor.value]
+    ['border-color', handleActiveBorderColor]
   );
   addRule('input[type=range].styled-slider:active::-moz-range-track',
     ['background', inputs.track.active.background.value],
-    ['border-color', inputs.track.active.borderColor.value]
+    ['border-color', trackActiveBorderColor]
   );
 
   s +=
@@ -962,22 +972,22 @@ input[type=range].styled-slider::-ms-track {
 
   addRule('input[type=range].styled-slider::-ms-thumb:hover',
     ['background', inputs.handle.hover.background.value],
-    ['border-color', inputs.handle.hover.borderColor.value]
+    ['border-color', handleHoverBorderColor]
   );
 
   addRule('input[type=range].styled-slider:hover::-ms-track',
     ['background', inputs.track.hover.background.value],
-    ['border-color', inputs.track.hover.borderColor.value]
+    ['border-color', trackHoverBorderColor]
   );
 
   addRule('input[type=range].styled-slider::-ms-thumb:active',
     ['background', inputs.handle.active.background.value],
-    ['border-color', inputs.handle.active.borderColor.value]
+    ['border-color', handleActiveBorderColor]
   );
 
   addRule('input[type=range].styled-slider:active::-ms-track',
     ['background', inputs.track.active.background.value],
-    ['border-color', inputs.track.active.borderColor.value]
+    ['border-color', trackActiveBorderColor]
   );
 
   const trackBorderWidth = inputs.track.border.value == 'none' ? '0' : decomposeStyle(`border: ${inputs.track.border.value};`, [
@@ -999,15 +1009,17 @@ input[type=range].styled-slider::-ms-track {
 
 `;
 
-  addRule('input[type=range].styled-slider.slider-progress:hover::-ms-fill-lower',
-    ['background', inputs.progress.hover.background.value],
-    ['border-color', inputs.track.hover.borderColor.value]
-  );
+  if (inputs.progress.hover.background.value.length != 0)
+    addRule('input[type=range].styled-slider.slider-progress:hover::-ms-fill-lower',
+      ['background', inputs.progress.hover.background.value],
+      ['border-color', trackHoverBorderColor]
+    );
 
-  addRule('input[type=range].styled-slider.slider-progress:active::-ms-fill-lower',
-    ['background', inputs.progress.active.background.value],
-    ['border-color', inputs.track.active.borderColor.value]
-  );
+  if (inputs.progress.active.background.value != 0)
+    addRule('input[type=range].styled-slider.slider-progress:active::-ms-fill-lower',
+      ['background', inputs.progress.active.background.value],
+      ['border-color', trackActiveBorderColor]
+    );
 
   output.textContent = s;
 
