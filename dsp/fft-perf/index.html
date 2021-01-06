@@ -10,14 +10,14 @@
 
   <!-- Open Graph / Facebook -->
   <meta property="og:type" content="website">
-  <meta property="og:url" content="https://toughengineer.github.io/demo/dsp/fft-perf.html">
+  <meta property="og:url" content="https://toughengineer.github.io/demo/dsp/fft-perf">
   <meta property="og:title" content="KISS FFT compiled to WASM vs. fft.js performance comparison">
   <meta property="og:description" content="I compiled KISS FFT into WASM using Emscripten and compared it's performance with fft.js in different browsers">
   <meta property="og:image" content="https://toughengineer.github.io/demo/dsp/fft-perf/thumbnail.png">
 
   <!-- Twitter -->
   <meta property="twitter:card" content="summary_large_image">
-  <meta property="twitter:url" content="https://toughengineer.github.io/demo/dsp/fft-perf.html">
+  <meta property="twitter:url" content="https://toughengineer.github.io/demo/dsp/fft-perf">
   <meta property="twitter:title" content="KISS FFT compiled to WASM vs. fft.js performance comparison">
   <meta property="twitter:description" content="I compiled KISS FFT into WASM using Emscripten and compared it's performance with fft.js in different browsers">
   <meta property="twitter:image" content="https://toughengineer.github.io/demo/dsp/fft-perf/thumbnail.png">
@@ -167,7 +167,7 @@
     }
 
     span.icon.chrome::before {
-      background-image: url(fft-perf/chrome.svg);
+      background-image: url(chrome.svg);
     }
 
     td span.icon {
@@ -179,7 +179,7 @@
       }
 
     span.icon.ff::before {
-      background-image: url(fft-perf/ff.svg);
+      background-image: url(firefox.svg);
     }
 
     td span.icon.ff {
@@ -187,7 +187,7 @@
     }
 
     span.icon.edge::before {
-      background-image: url(fft-perf/edge.svg);
+      background-image: url(edge.svg);
     }
 
     td span.icon.edge {
@@ -204,7 +204,7 @@
       vertical-align: middle;
     }
   </style>
-  <link rel="stylesheet" href="fft-perf/prism-vs.css" />
+  <link rel="stylesheet" href="prism-vs.css" />
 </head>
 <body>
   <div class="notQuite100PercentWide centered">
@@ -454,7 +454,7 @@
     </p>
     <p>
       What's left is to implement bindings.
-      (<a href="fft-perf/kiss_fft.js.cpp" download>download</a> the whole example)
+      (<a href="kiss_fft.js.cpp" download>download</a> the whole example)
     </p>
     <h2 id="extra-copy">Binding with extra copy</h2>
     <p>
@@ -802,8 +802,8 @@ const output = fft.transform();  // perform transformation
       }
     };
   </script>
-  <script async type="text/javascript" src="fft-perf/kissfft.js"></script>
-  <script type="text/javascript" src="fft-perf/fft.js"></script>
-  <script type="text/javascript" src="fft-perf/prism.js"></script>
+  <script async type="text/javascript" src="kissfft.js"></script>
+  <script type="text/javascript" src="fft.js"></script>
+  <script type="text/javascript" src="prism.js"></script>
 </body>
 </html>

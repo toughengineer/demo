@@ -1,1 +1,1 @@
-[Performance comparison](fft-perf.html) of [KISS FFT](https://github.com/mborgerding/kissfft) compiled into WASM, and [fft.js](https://github.com/indutny/fft.js).
+[Performance comparison](fft-perf) of [KISS FFT](https://github.com/mborgerding/kissfft) compiled into WASM, and [fft.js](https://github.com/indutny/fft.js).
