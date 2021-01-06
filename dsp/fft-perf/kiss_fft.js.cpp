@@ -19,7 +19,7 @@ struct KissFftBase {
   kiss_fftr_state *state;
 };
 
-emscripten::val toJSFloat32Array(const std::vector<double> &v) {
+emscripten::val toJSFloat64Array(const std::vector<double> &v) {
   emscripten::val view{ emscripten::typed_memory_view(v.size(), v.data()) };
 
   auto result = emscripten::val::global("Float64Array").new_(v.size());
@@ -39,7 +39,7 @@ struct KissFftRealExtraCopy : KissFftBase {
 
     kiss_fftr(state, data.data(), reinterpret_cast<kiss_fft_cpx *>(output.data()));
 
-    return toJSFloat32Array(output);
+    return toJSFloat64Array(output);
   }
 };
 
@@ -86,18 +86,18 @@ private:
 };
 
 EMSCRIPTEN_BINDINGS(KissFft) {
-  emscripten::class_<KissFftRealExtraCopy>("KissFftFloat32RealExtraCopy")
+  emscripten::class_<KissFftRealExtraCopy>("KissFftRealExtraCopy")
     .constructor<size_t>()
     .function("transform", &KissFftRealExtraCopy::transform)
     ;
 
-  emscripten::class_<KissFftReal>("KissFftFloat32Real")
+  emscripten::class_<KissFftReal>("KissFftReal")
     .constructor<size_t>()
     .function("getInputTimeDataBuffer", &KissFftReal::getInputTimeDataBuffer)
     .function("transform", &KissFftReal::transform)
     ;
 
-  emscripten::class_<KissFftRealInverse>("KissFftFloat32RealInverse")
+  emscripten::class_<KissFftRealInverse>("KissFftRealInverse")
     .constructor<size_t>()
     .function("getInputFrequencyDataBuffer", &KissFftRealInverse::getInputFrequencyDataBuffer)
     .function("transform", &KissFftRealInverse::transform)

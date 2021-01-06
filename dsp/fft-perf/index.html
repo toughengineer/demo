@@ -424,7 +424,7 @@
       In my case I needed direct and inverse transformation for real-valued time data (i.e. direct real→complex, and inverse complex→real).<br />
       <strong>KISS&nbsp;FFT</strong> implements both.
       <strong>fft.js</strong> implements only direct transformation for real-valued data, the inverse you'll have to implement yourself, or
-      use the general complex variant, which does not take into account the
+      use the general complex-valued variant, which does not take into account the
       <a href="https://en.wikipedia.org/wiki/Fast_Fourier_transform#FFT_algorithms_specialized_for_real_or_symmetric_data"
          target="_blank"
          title="FFT on Wikipedia">conjugate symmetry</a>
@@ -491,7 +491,7 @@ struct KissFftBase {
   kiss_fftr_state *state;
 };
 
-emscripten::val toJSFloat32Array(const std::vector&lt;double&gt; &v) {
+emscripten::val toJSFloat64Array(const std::vector&lt;double&gt; &v) {
   emscripten::val view{ emscripten::typed_memory_view(v.size(), v.data()) };  // make a view of local object
 
   auto result = emscripten::val::global("Float64Array").new_(v.size());  // make a JS typed array
@@ -511,12 +511,12 @@ struct KissFftRealExtraCopy : KissFftBase {
 
     kiss_fftr(state, data.data(), reinterpret_cast&lt;kiss_fft_cpx*&gt;(output.data()));  // reinterpret_cast is needed to call the API
 
-    return toJSFloat32Array(output);  // copy data to a JS Float64Array object and return the object
+    return toJSFloat64Array(output);  // copy data to a JS Float64Array object and return the object
   }
 };
 
 EMSCRIPTEN_BINDINGS(KissFft) {
-  emscripten::class_&lt;KissFftRealExtraCopy&gt;("KissFftFloat32RealExtraCopy")  // expose class with ctor and the only method
+  emscripten::class_&lt;KissFftRealExtraCopy&gt;("KissFftRealExtraCopy")  // expose class with ctor and the only method
     .constructor&lt;size_t&gt;()
     .function("transform", &KissFftRealExtraCopy::transform)
     ;
@@ -607,13 +607,13 @@ private:
 };
 
 EMSCRIPTEN_BINDINGS(KissFft) {  // expose classes each with ctor and two methods
-  emscripten::class_&lt;KissFftReal&gt;("KissFftFloat32Real")
+  emscripten::class_&lt;KissFftReal&gt;("KissFftReal")
     .constructor&lt;size_t&gt;()
     .function("getInputTimeDataBuffer", &KissFftReal::getInputTimeDataBuffer)
     .function("transform", &KissFftReal::transform)
     ;
 
-  emscripten::class_&lt;KissFftRealInverse&gt;("KissFftFloat32RealInverse")
+  emscripten::class_&lt;KissFftRealInverse&gt;("KissFftRealInverse")
     .constructor&lt;size_t&gt;()
     .function("getInputFrequencyDataBuffer", &KissFftRealInverse::getInputFrequencyDataBuffer)
     .function("transform", &KissFftRealInverse::transform)
@@ -625,12 +625,12 @@ EMSCRIPTEN_BINDINGS(KissFft) {  // expose classes each with ctor and two methods
       Here we expose buffers allocated on the WASM side as typed memory views to the JS side, no additional allocations or copying is needed.<br />
       We can use it like this on JS side:
     </p>
-    <pre><code class="language-js">const fft = new Module.KissFftFloat32Real(size);
+    <pre><code class="language-js">const fft = new Module.KissFftReal(size);
 
 const input = fft.getInputTimeDataBuffer();  // get buffer
 // fill input buffer
 const output = fft.transform();  // perform transformation
-// use transformation result in output buffer</code></pre>
+// use transformation result returned in output buffer</code></pre>
     <p>
       Not terribly aweful if you ask me.<br />
       Considering that it offers better performance in comparison with JS implementation
@@ -720,7 +720,7 @@ const output = fft.transform();  // perform transformation
 
       let kissFftExtraCopyRes = '';
       for (let size of sizes) {
-        const fft = new Module.KissFftFloat32RealExtraCopy(size);
+        const fft = new Module.KissFftRealExtraCopy(size);
 
         const data = new Float32Array(size);
         for (let v of data)
@@ -743,7 +743,7 @@ const output = fft.transform();  // perform transformation
 
       let kissFft0CopyRes = '';
       for (let size of sizes) {
-        const fft = new Module.KissFftFloat32Real(size);
+        const fft = new Module.KissFftReal(size);
 
         const data = fft.getInputTimeDataBuffer();
         for (let v of data)
