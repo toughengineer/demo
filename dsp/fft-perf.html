@@ -1,7 +1,7 @@
 ﻿<html>
 <head>
   <meta charset=utf-8>
-  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=2,shrink-to-fit=no">
+  <meta name="viewport" content="width=device-width,initial-scale=1,shrink-to-fit=no">
 
   <!-- Primary Meta Tags -->
   <title>KISS FFT compiled to WASM vs. fft.js performance comparison</title>
@@ -63,10 +63,10 @@
       .overscrollGradient::after {
         content: "";
         position: absolute;
-        top: 0;
+        top: 1em;
+        bottom: 1em;
         right: 0;
         width: 1em;
-        height: 100%;
         background: linear-gradient(to right, transparent, white);
         pointer-events: none;
       }
@@ -87,7 +87,6 @@
     div.results {
       display: inline-block;
       max-width: 100%;
-      margin-top: 1em;
       margin-bottom: 1em;
       border-radius: 3px;
       box-shadow: 0 0 0.5em #dadada;
@@ -226,7 +225,7 @@
       My results in <span class="icon chrome">Chrome</span>, <span class="icon ff">Firefox</span>,
       and old <span class="icon edge">Edge</span> (not the Chromium based):
     </p>
-    <div class="results overscrollGradient" style="display: block; width: 100%;">
+    <div class="results overscrollGradient">
       <div style="overflow-x: auto;">
         <table class="results">
           <tr>
@@ -382,7 +381,7 @@
           </tr>
         </table>
       </div>
-    </div>
+    </div><br />
     <span class="note">
       See below about <a href="#extra-copy">extra copy</a> and <a href="#zero-copy">zero copy</a> bindings for <strong>KISS&nbsp;FFT</strong>.
     </span>
