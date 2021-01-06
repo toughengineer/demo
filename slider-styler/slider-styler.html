@@ -1,7 +1,7 @@
 ﻿<html>
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=2,shrink-to-fit=no">
+  <meta name="viewport" content="width=device-width,initial-scale=1,shrink-to-fit=no">
 
   <!-- Primary Meta Tags -->
   <title>Input range slider CSS styler across browsers</title>
@@ -56,21 +56,25 @@
       box-shadow: 0 0 0.5em #eee;
     }
 
-    a[target="_blank"]:not(.no-external-link-icon)::after {
-      content: "";
-      width: 1em;
-      height: 1em;
-      background: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNiIgaGVpZ2h0PSIxNiI+PHBhdGggZD0iTTkgMnYxaDMuM0w2IDkuM2wuNy43TDEzIDMuN1Y3aDFWMnpNNCA0YTIgMiAwIDAwLTIgMnY2YzAgMS4xLjkgMiAyIDJoNmEyIDIgMCAwMDItMlY3bC0xIDF2NGMwIC42LS40IDEtMSAxSDRhMSAxIDAgMDEtMS0xVjZjMC0uNi40LTEgMS0xaDRsMS0xeiIvPjwvc3ZnPg==) no-repeat;
-      background-size: contain;
-      margin: 0 0.05em 0 0.1em;
-      display: inline-block;
-      vertical-align: text-bottom;
+    a[target="_blank"]:not(.no-external-link-icon) {
+      white-space: nowrap;
     }
+
+      a[target="_blank"]:not(.no-external-link-icon)::after {
+        content: "";
+        width: 1em;
+        height: 1em;
+        background: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNiIgaGVpZ2h0PSIxNiI+PHBhdGggZD0iTTkgMnYxaDMuM0w2IDkuM2wuNy43TDEzIDMuN1Y3aDFWMnpNNCA0YTIgMiAwIDAwLTIgMnY2YzAgMS4xLjkgMiAyIDJoNmEyIDIgMCAwMDItMlY3bC0xIDF2NGMwIC42LS40IDEtMSAxSDRhMSAxIDAgMDEtMS0xVjZjMC0uNi40LTEgMS0xaDRsMS0xeiIvPjwvc3ZnPg==) no-repeat;
+        background-size: contain;
+        margin: 0 0.05em 0 0.1em;
+        display: inline-block;
+        vertical-align: middle;
+      }
 
     img.icon {
       width: 1em;
       height: 1em;
-      vertical-align: text-bottom;
+      vertical-align: middle;
     }
 
     .dummy {

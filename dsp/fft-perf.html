@@ -23,16 +23,20 @@
   <meta property="twitter:image" content="https://toughengineer.github.io/demo/dsp/fft-perf-thumbnail.png">
 
   <style>
-    a[target="_blank"]:not(.no-external-link-icon)::after {
-      content: "";
-      width: 1em;
-      height: 1em;
-      background: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNiIgaGVpZ2h0PSIxNiI+PHBhdGggZD0iTTkgMnYxaDMuM0w2IDkuM2wuNy43TDEzIDMuN1Y3aDFWMnpNNCA0YTIgMiAwIDAwLTIgMnY2YzAgMS4xLjkgMiAyIDJoNmEyIDIgMCAwMDItMlY3bC0xIDF2NGMwIC42LS40IDEtMSAxSDRhMSAxIDAgMDEtMS0xVjZjMC0uNi40LTEgMS0xaDRsMS0xeiIvPjwvc3ZnPg==) no-repeat;
-      background-size: contain;
-      margin: 0 0.05em 0 0.1em;
-      display: inline-block;
-      vertical-align: text-bottom;
+    a[target="_blank"]:not(.no-external-link-icon) {
+      white-space: nowrap;
     }
+
+      a[target="_blank"]:not(.no-external-link-icon)::after {
+        content: "";
+        width: 1em;
+        height: 1em;
+        background: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNiIgaGVpZ2h0PSIxNiI+PHBhdGggZD0iTTkgMnYxaDMuM0w2IDkuM2wuNy43TDEzIDMuN1Y3aDFWMnpNNCA0YTIgMiAwIDAwLTIgMnY2YzAgMS4xLjkgMiAyIDJoNmEyIDIgMCAwMDItMlY3bC0xIDF2NGMwIC42LS40IDEtMSAxSDRhMSAxIDAgMDEtMS0xVjZjMC0uNi40LTEgMS0xaDRsMS0xeiIvPjwvc3ZnPg==) no-repeat;
+        background-size: contain;
+        margin: 0 0.05em 0 0.1em;
+        display: inline-block;
+        vertical-align: middle;
+      }
 
     p {
       line-height: 1.5;
@@ -52,29 +56,61 @@
       font-size: 0.9em;
     }
 
-    pre.codeBlock {
-      padding: 0.5em;
-      box-shadow: 0 0 0.5em #ddd;
+    .overscrollGradient {
+      position: relative;
+    }
+
+      .overscrollGradient::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 1em;
+        height: 100%;
+        background: linear-gradient(to right, transparent, white);
+        pointer-events: none;
+      }
+
+    .codeBlock {
+      margin: 1em 0;
       border-radius: 3px;
+      box-shadow: 0 0 0.5em #ddd;
+    }
+
+      .codeBlock pre {
+        margin: 0;
+        padding: 1em;
+        overflow-x: auto;
+      }
+
+
+    div.results {
+      display: inline-block;
+      max-width: 100%;
+      margin-top: 1em;
+      margin-bottom: 1em;
+      border-radius: 3px;
+      box-shadow: 0 0 0.5em #dadada;
     }
 
     table.results {
       font-family: monospace;
       text-align: right;
-      margin-top: 1em;
-      margin-bottom: 1em;
       border-collapse: collapse;
-      border-radius: 3px;
-      box-shadow: 0 0 0.5em #dadada;
+      table-layout: fixed;
     }
 
       table.results th, table.results td {
         padding: 0.5em;
       }
 
-      table.results tr:nth-child(even) {
-        background: #fafafa;
+      table.results tr {
+        background: white;
       }
+
+        table.results tr:nth-child(even) {
+          background: #fafafa;
+        }
 
       table.results td:first-of-type {
         text-align: left;
@@ -84,6 +120,10 @@
 
       table.results th:first-of-type, table.results td:first-of-type {
         padding-left: 1em;
+        position: sticky;
+        left: 0;
+        background: inherit;
+        z-index: 9000;
       }
 
       table.results th:last-of-type, table.results td:last-of-type {
@@ -98,22 +138,30 @@
         padding-bottom: 1em;
       }
 
-    span.icon::before {
-      content: "";
-      display: inline-block;
-      width: 1em;
-      height: 1em;
-      margin-right: 0.1em;
-      margin-left: 0.1em;
-      vertical-align: text-bottom;
-      background-size: contain;
+    span.icon {
+      white-space: nowrap;
     }
 
-    td span.icon::before {
-      float: left;
-      margin-right: 0.5em;
-      opacity: 0.2;
+      span.icon::before {
+        content: "";
+        display: inline-block;
+        width: 1em;
+        height: 1em;
+        margin-right: 0.1em;
+        margin-left: 0.1em;
+        vertical-align: middle;
+        background-size: contain;
+      }
+
+    td span.icon {
+      display: flex;
+      justify-content: space-between;
     }
+
+      td span.icon::before {
+        margin-right: 0.5em;
+        opacity: 0.2;
+      }
 
     td:hover span.icon::before {
       opacity: 1;
@@ -154,7 +202,7 @@
     img.icon {
       width: 1em;
       height: 1em;
-      vertical-align: text-bottom;
+      vertical-align: middle;
     }
   </style>
   <link rel="stylesheet" href="prism-vs.css" />
@@ -162,12 +210,14 @@
 <body>
   <div class="notQuite100PercentWide centered">
     Your result:
-    <pre id="bench-results" class="codeBlock">loading and running benchmark...
+    <div class="codeBlock overscrollGradient">
+      <pre id="bench-results">loading and running benchmark...
 
 
 
 
 </pre>
+    </div>
     <span class="note">
       (Result values are in real-valued time data FFT <em>transforms per second</em>, higher is better.
       <em># of iterations</em> is how many iteratios are used to measure execution speed.)
@@ -176,159 +226,163 @@
       My results in <span class="icon chrome">Chrome</span>, <span class="icon ff">Firefox</span>,
       and old <span class="icon edge">Edge</span> (not the Chromium based):
     </p>
-    <table class="results">
-      <tr>
-        <th>lib \ FFT size</th>
-        <th>128</th>
-        <th>256</th>
-        <th>512</th>
-        <th>1024</th>
-        <th>2048</th>
-        <th>4096</th>
-        <th>8192</th>
-        <th>16384</th>
-      </tr>
-      <tr>
-        <td>fft.js 4.0.3</td>
-        <td>
-          <span class="icon chrome">410000</span><br />
-          <span class="icon ff">82200</span><br />
-          <span class="icon edge">62900</span>
-        </td>
-        <td>
-          <span class="icon chrome">174000</span><br />
-          <span class="icon ff">44400</span><br />
-          <span class="icon edge">29800</span>
-        </td>
-        <td>
-          <span class="icon chrome">173000</span><br />
-          <span class="icon ff">20100</span><br />
-          <span class="icon edge">16700</span>
-        </td>
-        <td>
-          <span class="icon chrome">99240</span><br />
-          <span class="icon ff">11200</span><br />
-          <span class="icon edge">7400</span>
-        </td>
-        <td>
-          <span class="icon chrome">36300</span><br />
-          <span class="icon ff">5360</span><br />
-          <span class="icon edge">4440</span>
-        </td>
-        <td>
-          <span class="icon chrome">19000</span><br />
-          <span class="icon ff">2770</span><br />
-          <span class="icon edge">1860</span>
-        </td>
-        <td>
-          <span class="icon chrome">8090</span><br />
-          <span class="icon ff">1230</span><br />
-          <span class="icon edge">1080</span>
-        </td>
-        <td>
-          <span class="icon chrome">3940</span><br />
-          <span class="icon ff">663</span><br />
-          <span class="icon edge">434</span>
-        </td>
-      </tr>
-      <tr>
-        <td>kissfft extra copy</td>
-        <td>
-          <span class="icon chrome">110966</span><br />
-          <span class="icon ff">142000</span><br />
-          <span class="icon edge">48734</span>
-        </td>
-        <td>
-          <span class="icon chrome">103000</span><br />
-          <span class="icon ff">83100</span><br />
-          <span class="icon edge">42000</span>
-        </td>
-        <td>
-          <span class="icon chrome">80800</span><br />
-          <span class="icon ff">61000</span><br />
-          <span class="icon edge">31100</span>
-        </td>
-        <td>
-          <span class="icon chrome">42800</span><br />
-          <span class="icon ff">44400</span><br />
-          <span class="icon edge">20600</span>
-        </td>
-        <td>
-          <span class="icon chrome">26000</span><br />
-          <span class="icon ff">22200</span><br />
-          <span class="icon edge">13200</span>
-        </td>
-        <td>
-          <span class="icon chrome">11600</span><br />
-          <span class="icon ff">12200</span><br />
-          <span class="icon edge">6740</span>
-        </td>
-        <td>
-          <span class="icon chrome">7140</span><br />
-          <span class="icon ff">6780</span><br />
-          <span class="icon edge">3990</span>
-        </td>
-        <td>
-          <span class="icon chrome">3170</span><br />
-          <span class="icon ff">3210</span><br />
-          <span class="icon edge">1820</span>
-        </td>
-      </tr>
-      <tr>
-        <td>kissfft zero copy</td>
-        <td>
-          <span class="icon chrome">669000</span><br />
-          <span class="icon ff">651000</span><br />
-          <span class="icon edge">510588</span>
-        </td>
-        <td>
-          <span class="icon chrome">422000</span><br />
-          <span class="icon ff">355000</span><br />
-          <span class="icon edge">255000</span>
-        </td>
-        <td>
-          <span class="icon chrome">249000</span><br />
-          <span class="icon ff">195000</span><br />
-          <span class="icon edge">179000</span>
-        </td>
-        <td>
-          <span class="icon chrome">98000</span><br />
-          <span class="icon ff">69700</span><br />
-          <span class="icon edge">69200</span>
-        </td>
-        <td>
-          <span class="icon chrome">53000</span><br />
-          <span class="icon ff">44400</span><br />
-          <span class="icon edge">44400</span>
-        </td>
-        <td>
-          <span class="icon chrome">22000</span><br />
-          <span class="icon ff">18800</span><br />
-          <span class="icon edge">16100</span>
-        </td>
-        <td>
-          <span class="icon chrome">11700</span><br />
-          <span class="icon ff">10200</span><br />
-          <span class="icon edge">10300</span>
-        </td>
-        <td>
-          <span class="icon chrome">4810</span><br />
-          <span class="icon ff">4360</span><br />
-          <span class="icon edge">3770</span>
-        </td>
-      </tr>
-      <tr style="color: gray;">
-        <td title="Number of iterations used to measure execution speed"># of iterations</td>
-        <td>7812</td>
-        <td>3906</td>
-        <td>1953</td>
-        <td>976</td>
-        <td>488</td>
-        <td>244</td>
-        <td>122</td>
-        <td>61</td>
-      </tr>
-    </table>
+    <div class="results overscrollGradient" style="display: block; width: 100%;">
+      <div style="overflow-x: auto;">
+        <table class="results">
+          <tr>
+            <th>lib \ FFT size</th>
+            <th>128</th>
+            <th>256</th>
+            <th>512</th>
+            <th>1024</th>
+            <th>2048</th>
+            <th>4096</th>
+            <th>8192</th>
+            <th>16384</th>
+          </tr>
+          <tr>
+            <td>fft.js 4.0.3</td>
+            <td>
+              <span class="icon chrome">410000</span>
+              <span class="icon ff">82200</span>
+              <span class="icon edge">62900</span>
+            </td>
+            <td>
+              <span class="icon chrome">174000</span>
+              <span class="icon ff">44400</span>
+              <span class="icon edge">29800</span>
+            </td>
+            <td>
+              <span class="icon chrome">173000</span>
+              <span class="icon ff">20100</span>
+              <span class="icon edge">16700</span>
+            </td>
+            <td>
+              <span class="icon chrome">99240</span>
+              <span class="icon ff">11200</span>
+              <span class="icon edge">7400</span>
+            </td>
+            <td>
+              <span class="icon chrome">36300</span>
+              <span class="icon ff">5360</span>
+              <span class="icon edge">4440</span>
+            </td>
+            <td>
+              <span class="icon chrome">19000</span>
+              <span class="icon ff">2770</span>
+              <span class="icon edge">1860</span>
+            </td>
+            <td>
+              <span class="icon chrome">8090</span>
+              <span class="icon ff">1230</span>
+              <span class="icon edge">1080</span>
+            </td>
+            <td>
+              <span class="icon chrome">3940</span>
+              <span class="icon ff">663</span>
+              <span class="icon edge">434</span>
+            </td>
+          </tr>
+          <tr>
+            <td>kissfft extra copy</td>
+            <td>
+              <span class="icon chrome">110966</span>
+              <span class="icon ff">142000</span>
+              <span class="icon edge">48734</span>
+            </td>
+            <td>
+              <span class="icon chrome">103000</span>
+              <span class="icon ff">83100</span>
+              <span class="icon edge">42000</span>
+            </td>
+            <td>
+              <span class="icon chrome">80800</span>
+              <span class="icon ff">61000</span>
+              <span class="icon edge">31100</span>
+            </td>
+            <td>
+              <span class="icon chrome">42800</span>
+              <span class="icon ff">44400</span>
+              <span class="icon edge">20600</span>
+            </td>
+            <td>
+              <span class="icon chrome">26000</span>
+              <span class="icon ff">22200</span>
+              <span class="icon edge">13200</span>
+            </td>
+            <td>
+              <span class="icon chrome">11600</span>
+              <span class="icon ff">12200</span>
+              <span class="icon edge">6740</span>
+            </td>
+            <td>
+              <span class="icon chrome">7140</span>
+              <span class="icon ff">6780</span>
+              <span class="icon edge">3990</span>
+            </td>
+            <td>
+              <span class="icon chrome">3170</span>
+              <span class="icon ff">3210</span>
+              <span class="icon edge">1820</span>
+            </td>
+          </tr>
+          <tr>
+            <td>kissfft zero copy</td>
+            <td>
+              <span class="icon chrome">669000</span>
+              <span class="icon ff">651000</span>
+              <span class="icon edge">510588</span>
+            </td>
+            <td>
+              <span class="icon chrome">422000</span>
+              <span class="icon ff">355000</span>
+              <span class="icon edge">255000</span>
+            </td>
+            <td>
+              <span class="icon chrome">249000</span>
+              <span class="icon ff">195000</span>
+              <span class="icon edge">179000</span>
+            </td>
+            <td>
+              <span class="icon chrome">98000</span>
+              <span class="icon ff">69700</span>
+              <span class="icon edge">69200</span>
+            </td>
+            <td>
+              <span class="icon chrome">53000</span>
+              <span class="icon ff">44400</span>
+              <span class="icon edge">44400</span>
+            </td>
+            <td>
+              <span class="icon chrome">22000</span>
+              <span class="icon ff">18800</span>
+              <span class="icon edge">16100</span>
+            </td>
+            <td>
+              <span class="icon chrome">11700</span>
+              <span class="icon ff">10200</span>
+              <span class="icon edge">10300</span>
+            </td>
+            <td>
+              <span class="icon chrome">4810</span>
+              <span class="icon ff">4360</span>
+              <span class="icon edge">3770</span>
+            </td>
+          </tr>
+          <tr style="color: gray;">
+            <td title="Number of iterations used to measure execution speed"># of iterations</td>
+            <td>7812</td>
+            <td>3906</td>
+            <td>1953</td>
+            <td>976</td>
+            <td>488</td>
+            <td>244</td>
+            <td>122</td>
+            <td>61</td>
+          </tr>
+        </table>
+      </div>
+    </div>
     <span class="note">
       See below about <a href="#extra-copy">extra copy</a> and <a href="#zero-copy">zero copy</a> bindings for <strong>KISS&nbsp;FFT</strong>.
     </span>
@@ -479,7 +533,9 @@ EMSCRIPTEN_BINDINGS(KissFft) {
     <p>
       Execute
     </p>
-    <pre class="codeBlock">em++ -I. -Dkiss_fft_scalar=double kiss_fft.c tools\kiss_fftr.c kiss_fft.js.cpp -o build\kissfft.js --bind -O3 --closure 1</pre>
+    <div class="codeBlock overscrollGradient">
+      <pre>em++ -I. -Dkiss_fft_scalar=double kiss_fft.c tools\kiss_fftr.c kiss_fft.js.cpp -o build\kissfft.js --bind -O3 --closure 1</pre>
+    </div>
     <p>
       <code>em++</code> is the name of the Emscripten compiler frontend executable. Alternatively you can use <code>emcc</code>.
     </p>
