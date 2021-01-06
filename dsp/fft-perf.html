@@ -1,0 +1,753 @@
+﻿<html>
+<head>
+  <meta charset=utf-8>
+
+  <!-- Primary Meta Tags -->
+  <title>KISS FFT compiled to WASM vs. fft.js performance comparison</title>
+  <meta name="title" content="KISS FFT compiled to WASM vs. fft.js performance comparison">
+  <meta name="description" content="I compiled KISS FFT into WASM using Emscripten and compared it's performance with fft.js in different browsers">
+
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://toughengineer.github.io/demo/dsp/fft-perf.html">
+  <meta property="og:title" content="KISS FFT compiled to WASM vs. fft.js performance comparison">
+  <meta property="og:description" content="I compiled KISS FFT into WASM using Emscripten and compared it's performance with fft.js in different browsers">
+  <meta property="og:image" content="https://toughengineer.github.io/demo/dsp/fft-perf-thumbnail.png">
+
+  <!-- Twitter -->
+  <meta property="twitter:card" content="summary_large_image">
+  <meta property="twitter:url" content="https://toughengineer.github.io/demo/dsp/fft-perf.html">
+  <meta property="twitter:title" content="KISS FFT compiled to WASM vs. fft.js performance comparison">
+  <meta property="twitter:description" content="I compiled KISS FFT into WASM using Emscripten and compared it's performance with fft.js in different browsers">
+  <meta property="twitter:image" content="https://toughengineer.github.io/demo/dsp/fft-perf-thumbnail.png">
+
+  <style>
+    a[target="_blank"]:not(.no-external-link-icon)::after {
+      content: "";
+      width: 1em;
+      height: 1em;
+      background: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNiIgaGVpZ2h0PSIxNiI+PHBhdGggZD0iTTkgMnYxaDMuM0w2IDkuM2wuNy43TDEzIDMuN1Y3aDFWMnpNNCA0YTIgMiAwIDAwLTIgMnY2YzAgMS4xLjkgMiAyIDJoNmEyIDIgMCAwMDItMlY3bC0xIDF2NGMwIC42LS40IDEtMSAxSDRhMSAxIDAgMDEtMS0xVjZjMC0uNi40LTEgMS0xaDRsMS0xeiIvPjwvc3ZnPg==) no-repeat;
+      background-size: contain;
+      margin: 0 0.05em 0 0.1em;
+      display: inline-block;
+      vertical-align: text-bottom;
+    }
+
+    p {
+      line-height: 1.5;
+    }
+
+    .notQuite100PercentWide {
+      max-width: 70em;
+    }
+
+    .centered {
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .note {
+      color: #222;
+      font-size: 0.9em;
+    }
+
+    pre.codeBlock {
+      padding: 0.5em;
+      box-shadow: 0 0 0.5em #ddd;
+      border-radius: 3px;
+    }
+
+    table.results {
+      font-family: monospace;
+      text-align: right;
+      margin-top: 1em;
+      margin-bottom: 1em;
+      border-collapse: collapse;
+      border-radius: 3px;
+      box-shadow: 0 0 0.5em #dadada;
+    }
+
+      table.results th, table.results td {
+        padding: 0.5em;
+      }
+
+      table.results tr:nth-child(even) {
+        background: #fafafa;
+      }
+
+      table.results td:first-of-type {
+        text-align: left;
+        vertical-align: middle;
+        font-weight: bold;
+      }
+
+      table.results th:first-of-type, table.results td:first-of-type {
+        padding-left: 1em;
+      }
+
+      table.results th:last-of-type, table.results td:last-of-type {
+        padding-right: 1em;
+      }
+
+      table.results tr:first-of-type > th, table.results tr:first-of-type > td {
+        padding-top: 1em;
+      }
+
+      table.results tr:last-of-type > th, table.results tr:last-of-type > td {
+        padding-bottom: 1em;
+      }
+
+    span.icon::before {
+      content: "";
+      display: inline-block;
+      width: 1em;
+      height: 1em;
+      margin-right: 0.1em;
+      margin-left: 0.1em;
+      vertical-align: text-bottom;
+      background-size: contain;
+    }
+
+    td span.icon::before {
+      float: left;
+      margin-right: 0.5em;
+      opacity: 0.2;
+    }
+
+    td:hover span.icon::before {
+      opacity: 1;
+    }
+
+    span.icon.chrome::before {
+      background-image: url(chrome.svg);
+    }
+
+    td span.icon {
+      transition: opacity 0.5s;
+    }
+
+      td span.icon.chrome {
+        color: #0d8048;
+      }
+
+    span.icon.ff::before {
+      background-image: url(ff.svg);
+    }
+
+    td span.icon.ff {
+      color: #874222;
+    }
+
+    span.icon.edge::before {
+      background-image: url(edge.svg);
+    }
+
+    td span.icon.edge {
+      color: #104c87;
+    }
+
+    .credits:not(:hover) {
+      opacity: 0.33;
+    }
+
+    img.icon {
+      width: 1em;
+      height: 1em;
+      vertical-align: text-bottom;
+    }
+  </style>
+  <link rel="stylesheet" href="prism-vs.css" />
+</head>
+<body>
+  <div class="notQuite100PercentWide centered">
+    Your result:
+    <pre id="bench-results" class="codeBlock">loading and running benchmark...
+
+
+
+
+</pre>
+    <span class="note">
+      (Result values are in real-valued time data FFT <em>transforms per second</em>, higher is better.
+      <em># of iterations</em> is how many iteratios are used to measure execution speed.)
+    </span>
+    <p>
+      My results in <span class="icon chrome">Chrome</span>, <span class="icon ff">Firefox</span>,
+      and old <span class="icon edge">Edge</span> (not the Chromium based):
+    </p>
+    <table class="results">
+      <tr>
+        <th>lib \ FFT size</th>
+        <th>128</th>
+        <th>256</th>
+        <th>512</th>
+        <th>1024</th>
+        <th>2048</th>
+        <th>4096</th>
+        <th>8192</th>
+        <th>16384</th>
+      </tr>
+      <tr>
+        <td>fft.js 4.0.3</td>
+        <td>
+          <span class="icon chrome">410000</span><br />
+          <span class="icon ff">82200</span><br />
+          <span class="icon edge">62900</span>
+        </td>
+        <td>
+          <span class="icon chrome">174000</span><br />
+          <span class="icon ff">44400</span><br />
+          <span class="icon edge">29800</span>
+        </td>
+        <td>
+          <span class="icon chrome">173000</span><br />
+          <span class="icon ff">20100</span><br />
+          <span class="icon edge">16700</span>
+        </td>
+        <td>
+          <span class="icon chrome">99240</span><br />
+          <span class="icon ff">11200</span><br />
+          <span class="icon edge">7400</span>
+        </td>
+        <td>
+          <span class="icon chrome">36300</span><br />
+          <span class="icon ff">5360</span><br />
+          <span class="icon edge">4440</span>
+        </td>
+        <td>
+          <span class="icon chrome">19000</span><br />
+          <span class="icon ff">2770</span><br />
+          <span class="icon edge">1860</span>
+        </td>
+        <td>
+          <span class="icon chrome">8090</span><br />
+          <span class="icon ff">1230</span><br />
+          <span class="icon edge">1080</span>
+        </td>
+        <td>
+          <span class="icon chrome">3940</span><br />
+          <span class="icon ff">663</span><br />
+          <span class="icon edge">434</span>
+        </td>
+      </tr>
+      <tr>
+        <td>kissfft extra copy</td>
+        <td>
+          <span class="icon chrome">110966</span><br />
+          <span class="icon ff">142000</span><br />
+          <span class="icon edge">48734</span>
+        </td>
+        <td>
+          <span class="icon chrome">103000</span><br />
+          <span class="icon ff">83100</span><br />
+          <span class="icon edge">42000</span>
+        </td>
+        <td>
+          <span class="icon chrome">80800</span><br />
+          <span class="icon ff">61000</span><br />
+          <span class="icon edge">31100</span>
+        </td>
+        <td>
+          <span class="icon chrome">42800</span><br />
+          <span class="icon ff">44400</span><br />
+          <span class="icon edge">20600</span>
+        </td>
+        <td>
+          <span class="icon chrome">26000</span><br />
+          <span class="icon ff">22200</span><br />
+          <span class="icon edge">13200</span>
+        </td>
+        <td>
+          <span class="icon chrome">11600</span><br />
+          <span class="icon ff">12200</span><br />
+          <span class="icon edge">6740</span>
+        </td>
+        <td>
+          <span class="icon chrome">7140</span><br />
+          <span class="icon ff">6780</span><br />
+          <span class="icon edge">3990</span>
+        </td>
+        <td>
+          <span class="icon chrome">3170</span><br />
+          <span class="icon ff">3210</span><br />
+          <span class="icon edge">1820</span>
+        </td>
+      </tr>
+      <tr>
+        <td>kissfft zero copy</td>
+        <td>
+          <span class="icon chrome">669000</span><br />
+          <span class="icon ff">651000</span><br />
+          <span class="icon edge">510588</span>
+        </td>
+        <td>
+          <span class="icon chrome">422000</span><br />
+          <span class="icon ff">355000</span><br />
+          <span class="icon edge">255000</span>
+        </td>
+        <td>
+          <span class="icon chrome">249000</span><br />
+          <span class="icon ff">195000</span><br />
+          <span class="icon edge">179000</span>
+        </td>
+        <td>
+          <span class="icon chrome">98000</span><br />
+          <span class="icon ff">69700</span><br />
+          <span class="icon edge">69200</span>
+        </td>
+        <td>
+          <span class="icon chrome">53000</span><br />
+          <span class="icon ff">44400</span><br />
+          <span class="icon edge">44400</span>
+        </td>
+        <td>
+          <span class="icon chrome">22000</span><br />
+          <span class="icon ff">18800</span><br />
+          <span class="icon edge">16100</span>
+        </td>
+        <td>
+          <span class="icon chrome">11700</span><br />
+          <span class="icon ff">10200</span><br />
+          <span class="icon edge">10300</span>
+        </td>
+        <td>
+          <span class="icon chrome">4810</span><br />
+          <span class="icon ff">4360</span><br />
+          <span class="icon edge">3770</span>
+        </td>
+      </tr>
+      <tr style="color: gray;">
+        <td title="Number of iterations used to measure execution speed"># of iterations</td>
+        <td>7812</td>
+        <td>3906</td>
+        <td>1953</td>
+        <td>976</td>
+        <td>488</td>
+        <td>244</td>
+        <td>122</td>
+        <td>61</td>
+      </tr>
+    </table>
+    <span class="note">
+      See below about <a href="#extra-copy">extra copy</a> and <a href="#zero-copy">zero copy</a> bindings for <strong>KISS&nbsp;FFT</strong>.
+    </span>
+    <h1>Performance overview</h1>
+    <p>
+      I compared <a href="https://github.com/indutny/fft.js" title="fft.js on GitHub" target="_blank"><strong>fft.js</strong> 4.0.3</a>
+      (which claims to be "The fastest JS Radix-4/Radix-2 FFT implementation"),
+      and <a href="https://github.com/mborgerding/kissfft" title="KISS FFT on GitHub" target="_blank"><strong>KISS&nbsp;FFT</strong></a> compiled into WASM
+      with Emscripten <span class="note">(see the <a href="#emscripten">next</a> section for details)</span>.
+    </p>
+    <p>
+      Benchmark result values somewhat vary from run to run, so take the figures with a grain of salt.
+      That's why I rounded them to three significant digits.
+      Orders of magnitudes are pretty consistent though, so you should get rough idea comparing them instead of comparing exact figures.<br />
+      <em># of iterations</em> is how many iterations are used to measure execution speed and average over.
+    </p>
+    <p>
+      <strong>fft.js</strong> has great performance in Chrome, the same order of magnitude as the best binding implementation of
+      <strong>KISS&nbsp;FFT</strong> compiled into WASM,
+      which is indeed impressive!<br />
+      However in other browsers I tested, JS code performs noticably worse, i.e. several times slower compared to the fastest approach.
+      So we can say that Chromium engineers did a great job squeezing a lot of performance out of execution environment,
+      as well as <strong>fft.js</strong> author tailoring the code to use the opportunities.
+    </p>
+    <p>
+      Yet, overall, across different browsers respectively the best execution speed can be achieved with
+      <strong>KISS&nbsp;FFT</strong> compiled into WASM.
+    </p>
+    <p>
+      The downside of using <strong>KISS&nbsp;FFT</strong> is the size of compiled code:<br />
+      <code>
+        WASM: 33 KB<br />
+        supporting JS: 27 KB
+      </code><br />
+      compared to <strong>fft.js</strong>: <strong><code>5 KB</code></strong><br />
+      Additionally larger WASM blob may result in longer compilation times compared to the tiny JS implementation.
+      <span class="note">I didn't measure it.</span>
+    </p>
+    <p>
+      In my case I needed direct and inverse transformation for real-valued time data (i.e. direct real→complex, and inverse complex→real).<br />
+      <strong>KISS&nbsp;FFT</strong> implements both.
+      <strong>fft.js</strong> implements only direct transformation for real-valued data, the inverse you'll have to implement yourself, or
+      use the general complex variant, which does not take into account the
+      <a href="https://en.wikipedia.org/wiki/Fast_Fourier_transform#FFT_algorithms_specialized_for_real_or_symmetric_data"
+         target="_blank"
+         title="FFT on Wikipedia">conjugate symmetry</a>
+      of the complex frequency data and runs noticably slower than the specialized variant.<br />
+      Also <strong>KISS&nbsp;FFT</strong> can handle any size of data, implementing optimizations for factors 2, 3, 4, and 5,
+      while <strong>fft.js</strong> requires size to be a power of 2.
+    </p>
+    <h2>Conclusion</h2>
+    <p>
+      For my application with potentially thousands of direct and inverse transfromations
+      I think it is beneficial to prefer better execution speed considering it potentially can save battery life.<br />
+      I consider download overhead of ~55&nbsp;KB and potentially longer compilation times on page loading an acceptable tradeoff
+      to gain execution speed <em>several times</em> better compared to JS code ("only" ~50% better in Chrome).
+    </p>
+    <h1 id="emscripten">Compiling KISS&nbsp;FFT into WASM with JS bindings</h1>
+    <p>
+      First we need to get Emscripten SDK. The easiest way is to follow instructions on
+      <a href="https://emscripten.org/docs/getting_started/downloads.html" target="_blank" title="Download and install Emscripten docs">this page</a>
+      and use <code>emsdk</code> tool.
+    </p>
+    <p>
+      Sources for <strong>KISS&nbsp;FFT</strong> can be found in the project's
+      <a href="https://github.com/mborgerding/kissfft">GitHub repo</a>.<br />
+      To perform direct and inverse transformations for real-valued time data we need to compile
+      <code>kiss_fft.c</code>, which implements general purpose FFT, and
+      <code>tools\kiss_fftr.c</code>, which implements real-valued data stuff.
+    </p>
+    <p>
+      What's left is to implement bindings.
+      (<a href="kiss_fft.js.cpp" download>download</a> the whole example)
+    </p>
+    <h2 id="extra-copy">Binding with extra copy</h2>
+    <p>
+      To conveniently use it in JS code like this:
+    </p>
+    <pre><code class="language-js">const fft = new Module.KissFft(size);
+const result = fft.transform(data);</code></pre>
+    <p>
+      we have to implement bindings. Luckily it is super easy to do once you figure out how to use
+      <a href="https://emscripten.org/docs/porting/connecting_cpp_and_javascript/embind.html"
+         target="_blank"
+         title="Embind docs">Embind</a>.<br />
+      To be able to pass data in javascript <code class="language-js">Float64Array</code>s to C++ code and return result back
+      I came up with this implementation <span class="note">(see comments in code)</span>:
+    </p>
+    <pre><code class="language-cpp">#include "tools/kiss_fftr.h"
+
+#include &lt;emscripten/bind.h&gt;
+#include &lt;emscripten/val.h&gt;
+
+enum class FftDirection {
+  Direct,
+  Inverse
+};
+
+struct KissFftBase {
+  KissFftBase(size_t size, FftDirection direction) {
+    state = kiss_fftr_alloc(size, direction == FftDirection::Direct ? 0 : 1, nullptr, nullptr);
+  }
+  ~KissFftBase() {
+    kiss_fft_free(state);
+  }
+
+  kiss_fftr_state *state;
+};
+
+emscripten::val toJSFloat32Array(const std::vector&lt;double&gt; &v) {
+  emscripten::val view{ emscripten::typed_memory_view(v.size(), v.data()) };  // make a view of local object
+
+  auto result = emscripten::val::global("Float64Array").new_(v.size());  // make a JS typed array
+  result.call&lt;void&gt;("set", view);  // set typed array values "on the JS side" using the memory view
+
+  return result;
+}
+
+struct KissFftRealExtraCopy : KissFftBase {
+  KissFftRealExtraCopy(size_t size) : KissFftBase{ size, FftDirection::Direct } {}
+
+  auto transform(const emscripten::val &input) const {
+    const auto data = emscripten::convertJSArrayToNumberVector&lt;double&gt;(input);  // copy data from argument into local memory
+
+    std::vector&lt;double&gt; output;      // real and imaginary components are interleaved,
+    output.resize(data.size() + 2);  // need +1 bin (+2 elements) for Nyquist frequency
+
+    kiss_fftr(state, data.data(), reinterpret_cast&lt;kiss_fft_cpx*&gt;(output.data()));  // reinterpret_cast is needed to call the API
+
+    return toJSFloat32Array(output);  // copy data to a JS Float64Array object and return the object
+  }
+};
+
+EMSCRIPTEN_BINDINGS(KissFft) {
+  emscripten::class_&lt;KissFftRealExtraCopy&gt;("KissFftFloat32RealExtraCopy")  // expose class with ctor and the only method
+    .constructor&lt;size_t&gt;()
+    .function("transform", &KissFftRealExtraCopy::transform)
+    ;
+}</code></pre>
+    <p>
+      I put this code in <code>kiss_fft.js.cpp</code>.
+      <span class="note">(This code is used for <a href="#bench-results"><strong><code>kissfft extra copy</code></strong></a> variant in benchmark.)</span>
+    </p>
+    <p>
+      At this point we can build and use it.
+    </p>
+    <h3>Building</h3>
+    <p>
+      Execute
+    </p>
+    <pre class="codeBlock">em++ -I. -Dkiss_fft_scalar=double kiss_fft.c tools\kiss_fftr.c kiss_fft.js.cpp -o build\kissfft.js --bind -O3 --closure 1</pre>
+    <p>
+      <code>em++</code> is the name of the Emscripten compiler frontend executable. Alternatively you can use <code>emcc</code>.
+    </p>
+    <p>
+      <code>-Ipath</code> adds includes path. I execute it in the directory with the rest of <strong>KISS&nbsp;FFT</strong> sources,
+      so it's sufficient to just add the current directory with <code>-I.</code>
+    </p>
+    <p>
+      <code>-Dkiss_fft_scalar=double</code> defines <code>double</code>, i.e. 64 bit floating point type, as the real scalar type.
+      I tried single and double precision floating point types and their performance is roughly the same, so it's beneficial to use double precision.
+    </p>
+    <p>
+      <code>--bind</code> tells the compiler to use Embind bindings.
+    </p>
+    <p>
+      <code>-O3</code> tells the compiler to optimize the code for speed.
+    </p>
+    <p>
+      <code>--closure 1</code> runs Closure compiler to optimize the size of supporting JS code
+      <span class="note">(from 62&nbsp;KB to 27&nbsp;KB in my case)</span>.
+    </p>
+    <p>
+      Though providing convenient interface, extra copying incurs noticable penalty in all cases,
+      sometimes even making WASM implementation slower than JS code.<br />
+      If we want ultimate speed, we need to eliminate extra copying at the JS-WASM boundary.
+      Fortunately we can do it very easily even without making the interface ugly beyond repair.
+    </p>
+    <h2 id="zero-copy">Binding with zero copying</h2>
+    <pre><code class="language-cpp">//...
+struct KissFftReal : KissFftBase {
+  KissFftReal(size_t size) : KissFftBase{ size, FftDirection::Direct } {
+    input.resize(size);       // initialize buffers with sizes on construction
+    output.resize(size + 2);  // complex output needs +1 bin (+2 elements) for Nyquist frequency
+  }
+
+  auto transform() const {
+    kiss_fftr(state, input.data(), reinterpret_cast&lt;kiss_fft_cpx*&gt;(output.data()));
+
+    return emscripten::val{ emscripten::typed_memory_view(output.size(), output.data()) };  // return view of output data buffer
+  }
+
+  auto getInputTimeDataBuffer() {
+    return emscripten::val{ emscripten::typed_memory_view(input.size(), input.data()) };  // return view of input data buffer
+  }
+
+private:
+  std::vector&lt;double&gt; input;
+  mutable std::vector&lt;double&gt; output;
+};
+
+struct KissFftRealInverse : KissFftBase {
+  KissFftRealInverse(size_t size) : KissFftBase{ size, FftDirection::Inverse } {
+    input.resize(size + 2);  // complex input should contain +1 bin (+2 elements) for Nyquist frequency
+    output.resize(size);
+  }
+
+  auto transform() const {
+    kiss_fftri(state, reinterpret_cast&lt;const kiss_fft_cpx*&gt;(input.data()), output.data());
+
+    return emscripten::val{ emscripten::typed_memory_view(output.size(), output.data()) };
+  }
+
+  auto getInputFrequencyDataBuffer() {
+    return emscripten::val{ emscripten::typed_memory_view(input.size(), input.data()) };
+  }
+
+private:
+  std::vector&lt;double&gt; input;
+  mutable std::vector&lt;double&gt; output;
+};
+
+EMSCRIPTEN_BINDINGS(KissFft) {  // expose classes each with ctor and two methods
+  emscripten::class_&lt;KissFftReal&gt;("KissFftFloat32Real")
+    .constructor&lt;size_t&gt;()
+    .function("getInputTimeDataBuffer", &KissFftReal::getInputTimeDataBuffer)
+    .function("transform", &KissFftReal::transform)
+    ;
+
+  emscripten::class_&lt;KissFftRealInverse&gt;("KissFftFloat32RealInverse")
+    .constructor&lt;size_t&gt;()
+    .function("getInputFrequencyDataBuffer", &KissFftRealInverse::getInputFrequencyDataBuffer)
+    .function("transform", &KissFftRealInverse::transform)
+    ;
+}
+</code></pre>
+    <span class="note">(This code is used for <a href="#bench-results"><strong><code>kissfft zero copy</code></strong></a> variant in benchmark.)</span>
+    <p>
+      Here we expose buffers allocated on the WASM side as typed memory views to the JS side, no additional allocations or copying is needed.<br />
+      We can use it like this on JS side:
+    </p>
+    <pre><code class="language-js">const fft = new Module.KissFftFloat32Real(size);
+
+const input = fft.getInputTimeDataBuffer();  // get buffer
+// fill input buffer
+const output = fft.transform();  // perform transformation
+// use transformation result in output buffer</code></pre>
+    <p>
+      Not terribly aweful if you ask me.<br />
+      Considering that it offers better performance in comparison with JS implementation
+      (and that inverse transform for real-valued time data is already implemented)
+      I'm gonna use <strong>KISS&nbsp;FFT</strong> compiled into WASM.
+    </p>
+  </div>
+  <div class="credits" style="padding: 2em 0 1em 0;">
+    <div class="notQuite100PercentWide centered" style="text-align:center;">
+      View source code on <a class="no-external-link-icon" href="https://github.com/toughengineer/demo/tree/main/dsp" target="_blank"><img class="icon" src="/demo/mark-github.svg" /> GitHub</a>
+      <span class="note">(Not recommended for sanity sake.)</span> &#xFF5C;
+      <a class="no-external-link-icon" href="https://prismjs.com/" target="_blank">Prism syntax highlighter</a> &#xFF5C;
+      <a class="no-external-link-icon" href="https://icons8.com/icon/43738/external-link" target="_blank">External Link icon by Icons8</a><br />
+      <span class="note">These links will open in new tabs.</span>
+    </div>
+  </div>
+
+  <script>
+    (() => {
+      let chromeRuleStyle = null;
+      let ffRuleStyle = null;
+      let edgeRuleStyle = null;
+      for (let rule of document.styleSheets[0].cssRules) {
+        switch (rule.selectorText) {
+          case 'td span.icon.chrome':
+            chromeRuleStyle = rule.style;
+            break;
+
+          case 'td span.icon.ff':
+            ffRuleStyle = rule.style;
+            break;
+
+          case 'td span.icon.edge':
+            edgeRuleStyle = rule.style;
+            break;
+        }
+      }
+      function getHandlers(...styles) {
+        return [() => {
+          for (let s of styles)
+            s.opacity = '0.2';
+        },
+        () => {
+          for (let s of styles)
+            s.opacity = 'initial';
+        }];
+      }
+      for (let e of document.querySelectorAll('td span.icon')) {
+        const [over, out] =
+          e.classList.contains('chrome') ? getHandlers(ffRuleStyle, edgeRuleStyle) :
+            e.classList.contains('ff') ? getHandlers(chromeRuleStyle, edgeRuleStyle) :
+              e.classList.contains('edge') ? getHandlers(chromeRuleStyle, ffRuleStyle) :
+                [null, null];
+        e.addEventListener('mouseover', over);
+        e.addEventListener('mouseout', out);
+      }
+    })();
+
+    function bench() {
+      const padding = 8;
+      const res = new Map();
+
+      const sizes = [128, 256, 512, 1024, 2048, 4096, 8192, 16384];
+      const loopCount = (size) => Math.max(Math.trunc(1000000 / size), 1);
+
+      let fftjsRes = '';
+      for (let size of sizes) {
+        const fft = new FFTJS(size);
+
+        const data = new Array(size);
+        for (let v of data)
+          v = Math.random();
+        const out = fft.createComplexArray();
+
+        const count = loopCount(size);
+
+        const t0 = performance.now();
+        for (let i = 0; i != count; ++i) {
+          fft.realTransform(out, data);
+          void (out);
+        }
+        const t1 = performance.now();
+
+        fftjsRes += Math.round(count / (t1 - t0) * 1000).toString().padStart(padding);
+      }
+      res.set('fft.js 4.0.3', fftjsRes);
+
+      let kissFftExtraCopyRes = '';
+      for (let size of sizes) {
+        const fft = new Module.KissFftFloat32RealExtraCopy(size);
+
+        const data = new Float32Array(size);
+        for (let v of data)
+          v = Math.random();
+
+        const count = loopCount(size);
+
+        const t0 = performance.now();
+        for (let i = 0; i != count; ++i) {
+          const out = fft.transform(data);
+          void (out);
+        }
+        const t1 = performance.now();
+
+        kissFftExtraCopyRes += Math.round(count / (t1 - t0) * 1000).toString().padStart(padding);
+
+        fft.delete();
+      }
+      res.set('kissfft extra copy', kissFftExtraCopyRes);
+
+      let kissFft0CopyRes = '';
+      for (let size of sizes) {
+        const fft = new Module.KissFftFloat32Real(size);
+
+        const data = fft.getInputTimeDataBuffer();
+        for (let v of data)
+          v = Math.random();
+
+        const count = loopCount(size);
+
+        const t0 = performance.now();
+        for (let i = 0; i != count; ++i) {
+          const out = fft.transform();
+          void (out);
+        }
+        const t1 = performance.now();
+
+        kissFft0CopyRes += Math.round(count / (t1 - t0) * 1000).toString().padStart(padding);
+
+        fft.delete();
+      }
+      res.set('kissfft zero copy', kissFft0CopyRes);
+
+      let maxLength = 0;
+      res.forEach((val, key) => { maxLength = Math.max(maxLength, key.length); });
+
+      let resText = 'lib \\ FFT size'.padStart(maxLength + 1) + sizes.reduce((a, v) => a + v.toString().padStart(padding), '');
+      res.forEach((v, k) => {
+        resText += '\n ' + k.padEnd(maxLength) + v;
+      });
+      resText += '\n(' + '# of iterations'.padEnd(maxLength) + sizes.reduce((a, v) => a + loopCount(v).toString().padStart(padding), '') + ')';
+      const logOutput = document.getElementById('bench-results').textContent = resText;
+    }
+
+    var Module = {
+      preRun: [],
+      postRun: [bench],
+      print: function (text) {
+        if (arguments.length > 1)
+          text = Array.prototype.slice.call(arguments).join(' ');
+        console.log(text);
+      },
+      printErr: function (text) {
+        if (arguments.length > 1)
+          text = Array.prototype.slice.call(arguments).join(' ');
+        console.error(text);
+      },
+      setStatus: function (text) {
+        if (!Module.setStatus.last)
+          Module.setStatus.last = { time: Date.now(), text: '' };
+        if (text === Module.setStatus.last.text)
+          return;
+        console.log(text);
+      },
+      totalDependencies: 0,
+      monitorRunDependencies: function (left) {
+        this.totalDependencies = Math.max(this.totalDependencies, left);
+        Module.setStatus(left ? 'Preparing... (' + (this.totalDependencies - left) + '/' + this.totalDependencies + ')' : 'All downloads complete.');
+      }
+    };
+  </script>
+  <script async type="text/javascript" src="kissfft.js"></script>
+  <script type="text/javascript" src="fft.js"></script>
+  <script src="prism.js"></script>
+</body>
+</html>
