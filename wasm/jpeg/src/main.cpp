@@ -4,8 +4,6 @@
 #include <emscripten/val.h>
 #include <emscripten/bind.h>
 
-#include <algorithm>
-
 #include <iostream>
 
 struct IODevice {
@@ -57,13 +55,9 @@ int outFunc(                // 1:Ok, 0:Aborted
 
 struct TJpgDec {
   size_t decode(emscripten::val input) {
-    std::cout << input.typeOf().as<std::string>() << std::endl;
-
     const auto uint8Array = emscripten::val::global("Uint8Array");
     const auto inputView = uint8Array.new_(input);
     const auto size = inputView["length"].as<size_t>();
-
-    std::cout << "size: " << size << std::endl;
 
     std::vector<uint8_t> data;
     data.resize(size);
@@ -74,12 +68,10 @@ struct TJpgDec {
     IODevice device = { {data.data(), data.size()} };
     std::vector<uint8_t> workBuffer(3100);
 
-    std::cout << "calling jd_prepare" << std::endl;
     if (const auto res = jd_prepare(&jdec, inFunc, workBuffer.data(), workBuffer.size(), &device); res != JDR_OK)
       return res + 1000;
     device.output.resize(3 * jdec.width * jdec.height);
 
-    std::cout << "calling jd_decomp" << std::endl;
     if (const auto res = jd_decomp(&jdec, outFunc, 0); res != JDR_OK)
       return res;
 
