@@ -4,11 +4,9 @@
 #include <emscripten/val.h>
 #include <emscripten/bind.h>
 
-#include <iostream>
-
 struct IODevice {
   struct {
-    uint8_t *buffer;
+    const uint8_t *buffer;
     size_t size;
     size_t pos = 0;
   } input;
@@ -66,9 +64,9 @@ struct TJpgDec {
 
     JDEC jdec;
     IODevice device = { {data.data(), data.size()} };
-    std::vector<uint8_t> workBuffer(3100);
+    uint8_t workBuffer[3100];
 
-    if (const auto res = jd_prepare(&jdec, inFunc, workBuffer.data(), workBuffer.size(), &device); res != JDR_OK)
+    if (const auto res = jd_prepare(&jdec, inFunc, &workBuffer, sizeof(workBuffer), &device); res != JDR_OK)
       return res + 1000;
     device.output.resize(3 * jdec.width * jdec.height);
 
