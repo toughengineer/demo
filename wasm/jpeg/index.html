@@ -1,0 +1,86 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+
+  <title>jpeg decoding</title>
+</head>
+<body>
+  <p>
+    this is a quick and dirty test of <a href="http://elm-chan.org/fsw/tjpgd/00index.html">TJpgDec</a> compiled into WASM
+  </p>
+  <div>
+    <input type="file" id="input">
+  </div>
+  <div id="msg">
+    choose file
+  </div>
+  <div>
+    <canvas></canvas>
+  </div>
+
+  <script src="jpeg.js" defer type="text/javascript"></script>
+  <script type="text/javascript">
+    let Module = {
+      postRun: [],
+      print: function (text) {
+        if (arguments.length > 1)
+          text = Array.prototype.slice.call(arguments).join(' ');
+        console.log(text);
+      },
+      printErr: function (text) {
+        if (arguments.length > 1)
+          text = Array.prototype.slice.call(arguments).join(' ');
+        console.log(text);
+      }
+    };
+
+    const input = document.getElementById('input');
+
+    Module.postRun.push(() => {
+      console.log('modules loaded');
+
+      const ctx = document.querySelector('canvas').getContext('2d', { alpha: false });
+      const msg = document.getElementById('msg');
+
+      const decoder = new Module.TJpgDec();
+
+      function decode(data) {
+        const t0 = performance.now();
+        const result = decoder.decode(data);
+        const t1 = performance.now();
+        msg.textContent = `decoded in ${t1 - t0} ms`;
+
+        console.log(`decoding result: ${result}`);
+
+        if (result != 0)
+          return;
+
+        console.log(`size ${decoder.width} x ${decoder.height}`);
+
+        ctx.canvas.width = decoder.width;
+        ctx.canvas.height = decoder.height;
+
+        const decoded = decoder.result;
+        const imageData = ctx.getImageData(0, 0, ctx.canvas.width, ctx.canvas.height);
+        for (let i = 0; i != imageData.width * imageData.height; ++i) {
+          imageData.data[i * 4] = decoded[i * 3];
+          imageData.data[i * 4 + 1] = decoded[i * 3 + 1];
+          imageData.data[i * 4 + 2] = decoded[i * 3 + 2];
+          imageData.data[i * 4 + 3] = 255;
+        }
+        ctx.putImageData(imageData, 0, 0);
+      }
+
+      input.addEventListener('change', () => {
+        const reader = new FileReader();
+        reader.addEventListener('loadend', () => {
+          decode(reader.result);
+        });
+        reader.readAsArrayBuffer(input.files[0]);
+      });
+    });
+  </script>
+</body>
+</html>
+
