@@ -1,8 +1,9 @@
-const version = '20201227';
+const version = '20210711';
 
 const defaultSetup = {
   element: {
-    height: '2.2em'
+    height: '2.2em',
+    disableOutline: true
   },
   handle: {
     background: {
@@ -603,6 +604,11 @@ const inputs = {
         }
       }))
     })(),
+    disableOutline: (() => {
+      const checkbox = document.querySelector('#outline #disableOutline');
+      checkbox.checked = defaultSetup.element.disableOutline;
+      return checkbox;
+    })()
   },
   handle: {
     background: addToInputsAndGet(setupBackgroundSection('#handle #background #normal', defaultSetup.handle.background)),
@@ -753,11 +759,18 @@ input[type=range].styled-slider.slider-progress {
   --sx: calc(0.5 * ${handleWidth} + var(--ratio) * (100% - ${handleWidth}));
 }
 
-input[type=range].styled-slider:focus {
+`;
+
+  if (inputs.element.disableOutline.checked)
+    s +=
+      `input[type=range].styled-slider:focus {
   outline: none;
 }
 
-/*webkit*/
+`;
+
+  s +=
+    `/*webkit*/
 input[type=range].styled-slider::-webkit-slider-thumb {
   width: ${handleWidth};
   height: ${handleHeight};
@@ -1050,6 +1063,8 @@ function generateStylesThrottled() {
 for (let e of rawInputs) {
   addEventListeners(['change', 'input', 'valueChanged'], e.input, generateStylesThrottled);
 }
+
+inputs.element.disableOutline.addEventListener('change', generateStylesThrottled);
 
 function setupCopyButton(buttonID, element) {
   const button = document.getElementById(buttonID);
