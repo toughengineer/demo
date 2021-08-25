@@ -403,7 +403,7 @@
       <strong>fft.js</strong> has great performance in Chrome, the same order of magnitude as the best binding implementation of
       <strong>KISS&nbsp;FFT</strong> compiled into WASM,
       which is indeed impressive!<br />
-      However in other browsers I tested, JS code performs noticably worse, i.e. several times slower compared to the fastest approach.
+      However in other browsers I tested, JS code performs noticeably worse, i.e. several times slower compared to the fastest approach.
       So we can say that Chromium engineers did a great job squeezing a lot of performance out of execution environment,
       as well as <strong>fft.js</strong> author tailoring the code to use the opportunities.
     </p>
@@ -429,7 +429,7 @@
       <a href="https://en.wikipedia.org/wiki/Fast_Fourier_transform#FFT_algorithms_specialized_for_real_or_symmetric_data"
          target="_blank"
          title="FFT on Wikipedia">conjugate symmetry</a>
-      of the complex frequency data and runs noticably slower than the specialized variant.<br />
+      of the complex frequency data and runs noticeably slower than the specialized variant.<br />
       Also <strong>KISS&nbsp;FFT</strong> can handle any size of data, implementing optimizations for factors 2, 3, 4, and 5,
       while <strong>fft.js</strong> requires size to be a power of 2.
     </p>
@@ -558,7 +558,7 @@ EMSCRIPTEN_BINDINGS(KissFft) {
       <span class="note">(from 62&nbsp;KB to 27&nbsp;KB in my case)</span>.
     </p>
     <p>
-      Though providing convenient interface, extra copying incurs noticable penalty in all cases,
+      Though providing convenient interface, extra copying incurs noticeable penalty in all cases,
       sometimes even making WASM implementation slower than JS code.<br />
       If we want ultimate speed, we need to eliminate extra copying at the JS-WASM boundary.
       Fortunately we can do it very easily even without making the interface ugly beyond repair.
