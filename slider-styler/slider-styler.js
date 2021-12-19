@@ -1,4 +1,4 @@
-const version = '20210711';
+const version = '20211219';
 
 const defaultSetup = {
   element: {
@@ -6,6 +6,7 @@ const defaultSetup = {
     disableOutline: true
   },
   handle: {
+    isPresent: true,
     background: {
       color: '#007cf8',
       color2: 'green',
@@ -37,6 +38,7 @@ const defaultSetup = {
     }
   },
   track: {
+    isPresent: true,
     background: {
       color: '#efefef',
       color2: 'green',
@@ -69,6 +71,7 @@ const defaultSetup = {
     }
   },
   progress: {
+    isPresent: true,
     background: {
       color: '#007cf8',
       color2: 'green',
@@ -591,6 +594,12 @@ function addToInputsAndGet(setupResult) {
   return setupResult.input;
 }
 
+function setupCheckbox(selector, checkedState) {
+  const checkbox = document.querySelector(selector);
+  checkbox.checked = checkedState;
+  return checkbox;
+}
+
 const inputs = {
   element: {
     height: (() => {
@@ -604,13 +613,10 @@ const inputs = {
         }
       }))
     })(),
-    disableOutline: (() => {
-      const checkbox = document.querySelector('#outline #disableOutline');
-      checkbox.checked = defaultSetup.element.disableOutline;
-      return checkbox;
-    })()
+    disableOutline: setupCheckbox('#outline #disableOutline', defaultSetup.element.disableOutline)
   },
   handle: {
+    isPresent: setupCheckbox('#handle #isPresent', defaultSetup.handle.isPresent),
     background: addToInputsAndGet(setupBackgroundSection('#handle #background #normal', defaultSetup.handle.background)),
     width: addToInputsAndGet(setupWidthSection('#handle #width', defaultSetup.handle.width)),
     height: addToInputsAndGet(setupHeightSection('#handle #height', defaultSetup.handle.height)),
@@ -627,6 +633,7 @@ const inputs = {
     }
   },
   track: {
+    isPresent: setupCheckbox('#track #isPresent', defaultSetup.track.isPresent),
     background: addToInputsAndGet(setupBackgroundSection('#track #background #normal', defaultSetup.track.background)),
     height: addToInputsAndGet(setupHeightSection('#track #height', defaultSetup.track.height)),
     borderRadius: addToInputsAndGet(setupBorderRadiusSection('#track #borderRadius', defaultSetup.track.borderRadius)),
@@ -642,6 +649,7 @@ const inputs = {
     }
   },
   progress: {
+    isPresent: setupCheckbox('#progress #isPresent', defaultSetup.progress.isPresent),
     background: addToInputsAndGet(setupBackgroundSection('#progress #background #normal', defaultSetup.progress.background)),
     hover: {
       background: addToInputsAndGet(setupOverriddenBackgroundSection('#progress #background #hover', defaultSetup.progress.background.hover, defaultSetup.progress.background))
@@ -652,6 +660,14 @@ const inputs = {
     }
   }
 };
+
+const progressSubContainers = document.querySelectorAll('.progressSubContainer');
+function setProgressSubContainersVisible(visible) {
+  const display = visible ? '' : 'none';
+  for (let c of progressSubContainers)
+    c.style.display = display;
+}
+setProgressSubContainersVisible(defaultSetup.track.isPresent && defaultSetup.progress.isPresent);
 
 const cssBlock = document.getElementById('generatedCssBlock');
 document.getElementById('stickCssBlockCheckbox').addEventListener('change', function () {
@@ -752,11 +768,18 @@ input[type=range].styled-slider {
     `  -webkit-appearance: none;
 }
 
-/*progress support*/
+`;
+
+  if (inputs.track.isPresent.checked && inputs.progress.isPresent.checked)
+    s +=
+      `/*progress support*/
 input[type=range].styled-slider.slider-progress {
   --range: calc(var(--max) - var(--min));
   --ratio: calc((var(--value) - var(--min)) / var(--range));
-  --sx: calc(0.5 * ${handleWidth} + var(--ratio) * (100% - ${handleWidth}));
+  --sx: calc(${inputs.handle.isPresent.checked ?
+        `0.5 * ${handleWidth} + var(--ratio) * (100% - ${handleWidth})` :
+        'var(--ratio) * 100%'
+      });
 }
 
 `;
@@ -772,23 +795,54 @@ input[type=range].styled-slider.slider-progress {
   s +=
     `/*webkit*/
 input[type=range].styled-slider::-webkit-slider-thumb {
-  width: ${handleWidth};
+  -webkit-appearance: none;
+`;
+
+  if (inputs.handle.isPresent.checked) {
+    s +=
+      `  width: ${handleWidth};
   height: ${handleHeight};
   border-radius: ${inputs.handle.borderRadius.value};
   background: ${inputs.handle.background.value};
   border: ${inputs.handle.border.value};
   box-shadow: ${inputs.handle.shadow.value};
   margin-top: ${handleMarginTop};
-  -webkit-appearance: none;
-}
-
-input[type=range].styled-slider::-webkit-slider-runnable-track {
+`;
+  }
+  else {
+    s +=
+      `  width: 0;
   height: ${trackHeight};
-  border-radius: ${inputs.track.borderRadius.value};
-  background: ${inputs.track.background.value};
+  visibility: hidden;
+`;
+  }
+
+  s +=
+    `}
+
+`;
+
+  s +=
+    `input[type=range].styled-slider::-webkit-slider-runnable-track {
+  height: ${trackHeight};
   border: ${inputs.track.border.value};
+`;
+
+  if (inputs.track.isPresent.checked) {
+    s +=
+      `  border-radius: ${inputs.track.borderRadius.value};
+  background: ${inputs.track.background.value};
   box-shadow: ${inputs.track.shadow.value};
-}
+`;
+  }
+  else if (trackBorder != null) {
+    s +=
+      `  border-color: transparent;
+`;
+  }
+
+  s +=
+    `}
 `;
 
   function addRule(selector, ...properties) {
@@ -802,31 +856,35 @@ input[type=range].styled-slider::-webkit-slider-runnable-track {
 
   const handleHoverBorderColor = inputs.handle.border.value == 'none' ? '' : inputs.handle.hover.borderColor.value;
 
-  addRule('input[type=range].styled-slider::-webkit-slider-thumb:hover',
-    ['background', inputs.handle.hover.background.value],
-    ['border-color', handleHoverBorderColor]
-  );
+  if (inputs.handle.isPresent.checked)
+    addRule('input[type=range].styled-slider::-webkit-slider-thumb:hover',
+      ['background', inputs.handle.hover.background.value],
+      ['border-color', handleHoverBorderColor]
+    );
 
   const trackHoverBorderColor = inputs.track.border.value == 'none' ? '' : inputs.track.hover.borderColor.value;
 
-  addRule('input[type=range].styled-slider:hover::-webkit-slider-runnable-track',
-    ['background', inputs.track.hover.background.value],
-    ['border-color', trackHoverBorderColor]
-  );
+  if (inputs.track.isPresent.checked)
+    addRule('input[type=range].styled-slider:hover::-webkit-slider-runnable-track',
+      ['background', inputs.track.hover.background.value],
+      ['border-color', trackHoverBorderColor]
+    );
 
   const handleActiveBorderColor = inputs.handle.border.value == 'none' ? '' : inputs.handle.active.borderColor.value;
 
-  addRule('input[type=range].styled-slider::-webkit-slider-thumb:active',
-    ['background', inputs.handle.active.background.value],
-    ['border-color', handleActiveBorderColor]
-  );
+  if (inputs.handle.isPresent.checked)
+    addRule('input[type=range].styled-slider::-webkit-slider-thumb:active',
+      ['background', inputs.handle.active.background.value],
+      ['border-color', handleActiveBorderColor]
+    );
 
   const trackActiveBorderColor = inputs.track.border.value == 'none' ? '' : inputs.track.active.borderColor.value;
 
-  addRule('input[type=range].styled-slider:active::-webkit-slider-runnable-track',
-    ['background', inputs.track.active.background.value],
-    ['border-color', trackActiveBorderColor]
-  );
+  if (inputs.track.isPresent.checked)
+    addRule('input[type=range].styled-slider:active::-webkit-slider-runnable-track',
+      ['background', inputs.track.active.background.value],
+      ['border-color', trackActiveBorderColor]
+    );
 
   function makeGradientIfNeeded(background) {
     if (CSS.supports('background-color', background))
@@ -835,50 +893,51 @@ input[type=range].styled-slider::-webkit-slider-runnable-track {
     return background;
   }
 
-  const trackProgressBg = makeGradientIfNeeded(inputs.progress.background.value);
+  function valueOrDefault(value, defaultValue) {
+    return value.length == 0 ? defaultValue : value;
+  }
 
-  s +=
-    `input[type=range].styled-slider.slider-progress::-webkit-slider-runnable-track {
+  const trackProgressBg = makeGradientIfNeeded(inputs.progress.background.value);
+  const trackHoverNormalBg = valueOrDefault(inputs.track.hover.background.value, inputs.track.background.value);
+  let trackProgressHoverBg = inputs.progress.hover.background.value;
+  if (trackProgressHoverBg.length != 0 || inputs.track.hover.background.value.length != 0)
+    trackProgressHoverBg = makeGradientIfNeeded(valueOrDefault(trackProgressHoverBg, inputs.progress.background.value));
+
+  const trackActiveNormalBg = valueOrDefault(inputs.track.active.background.value, trackHoverNormalBg);
+
+  let trackProgressActiveBg = inputs.progress.active.background.value;
+  if (trackProgressActiveBg.length != 0 || inputs.track.active.background.value.length != 0)
+    trackProgressActiveBg = makeGradientIfNeeded(valueOrDefault(trackProgressActiveBg, trackProgressHoverBg));
+
+  if (inputs.track.isPresent.checked && inputs.progress.isPresent.checked) {
+    s +=
+      `input[type=range].styled-slider.slider-progress::-webkit-slider-runnable-track {
   background: ${trackProgressBg} 0/var(--sx) 100% no-repeat, ${inputs.track.background.value};
 }
 
 `;
 
-  function valueOrDefault(value, defaultValue) {
-    return value.length == 0 ? defaultValue : value;
-  }
-
-  const trackHoverNormalBg = valueOrDefault(inputs.track.hover.background.value, inputs.track.background.value);
-
-  let trackProgressHoverBg = inputs.progress.hover.background.value;
-  if (trackProgressHoverBg.length != 0 || inputs.track.hover.background.value.length != 0) {
-    trackProgressHoverBg = makeGradientIfNeeded(valueOrDefault(trackProgressHoverBg, inputs.progress.background.value));
-
-    s +=
-      `input[type=range].styled-slider.slider-progress:hover::-webkit-slider-runnable-track {
+    if (trackProgressHoverBg.length != 0)
+      s +=
+        `input[type=range].styled-slider.slider-progress:hover::-webkit-slider-runnable-track {
   background: ${trackProgressHoverBg} 0/var(--sx) 100% no-repeat, ${trackHoverNormalBg};
 }
 
 `;
-  }
 
-  const trackActiveNormalBg = valueOrDefault(inputs.track.active.background.value, trackHoverNormalBg);
-
-  let trackProgressActiveBg = inputs.progress.active.background.value;
-  if (trackProgressActiveBg.length != 0 || inputs.track.active.background.value.length != 0) {
-    trackProgressActiveBg = makeGradientIfNeeded(valueOrDefault(trackProgressActiveBg, trackProgressHoverBg));
-
-    s +=
-      `input[type=range].styled-slider.slider-progress:active::-webkit-slider-runnable-track {
+    if (trackProgressActiveBg.length != 0)
+      s +=
+        `input[type=range].styled-slider.slider-progress:active::-webkit-slider-runnable-track {
   background: ${trackProgressActiveBg} 0/var(--sx) 100% no-repeat, ${trackActiveNormalBg};
 }
 
 `;
+
   }
 
-  function getAdjustedLength(baseLength, decomposedBborder, ...properties) {
-    return baseLength == '0' || decomposedBborder === null ? baseLength :
-      `max(calc(${baseLength} - ${decomposedBborder[properties[0]]} - ${decomposedBborder[properties[1]]}),0px)`;
+  function getAdjustedLength(baseLength, decomposedBorder, ...properties) {
+    return baseLength == '0' || decomposedBorder === null ? baseLength :
+      `max(calc(${baseLength} - ${decomposedBorder[properties[0]]} - ${decomposedBorder[properties[1]]}),0px)`;
   }
 
   const adjustedHandleWidth = getAdjustedLength(handleWidth, handleBorder, 'border-left-width', 'border-right-width');
@@ -888,65 +947,103 @@ input[type=range].styled-slider::-webkit-slider-runnable-track {
   s +=
     `/*mozilla*/
 input[type=range].styled-slider::-moz-range-thumb {
-  width: ${adjustedHandleWidth};
+`;
+
+  if (inputs.handle.isPresent.checked) {
+    s +=
+      `  width: ${adjustedHandleWidth};
   height: ${adjustedHandleHeight};
   border-radius: ${inputs.handle.borderRadius.value};
   background: ${inputs.handle.background.value};
   border: ${inputs.handle.border.value};
   box-shadow: ${inputs.handle.shadow.value};
-}
+`;
+  }
+  else {
+    s +=
+      `  width: 0;
+  height: ${trackHeight};
+  visibility: hidden;
+`;
+  }
 
-input[type=range].styled-slider::-moz-range-track {
-  height: ${adjustedTrackHeight};
-  border-radius: ${inputs.track.borderRadius.value};
-  background: ${inputs.track.background.value};
-  border: ${inputs.track.border.value};
-  box-shadow: ${inputs.track.shadow.value};
-}
+  s +=
+    `}
 
 `;
 
-  addRule('input[type=range].styled-slider::-moz-range-thumb:hover',
-    ['background', inputs.handle.hover.background.value],
-    ['border-color', handleHoverBorderColor]
-  );
-  addRule('input[type=range].styled-slider:hover::-moz-range-track',
-    ['background', inputs.track.hover.background.value],
-    ['border-color', trackHoverBorderColor]
-  );
+  s +=
+    `input[type=range].styled-slider::-moz-range-track {
+  height: ${adjustedTrackHeight};
+  border: ${inputs.track.border.value};
+`;
 
-  addRule('input[type=range].styled-slider::-moz-range-thumb:active',
-    ['background', inputs.handle.active.background.value],
-    ['border-color', handleActiveBorderColor]
-  );
-  addRule('input[type=range].styled-slider:active::-moz-range-track',
-    ['background', inputs.track.active.background.value],
-    ['border-color', trackActiveBorderColor]
-  );
+  if (inputs.track.isPresent.checked) {
+    s +=
+      `  border-radius: ${inputs.track.borderRadius.value};
+  background: ${inputs.track.background.value};
+  box-shadow: ${inputs.track.shadow.value};
+`;
+  }
+  else if (trackBorder != null) {
+    s +=
+      `  visibility: hidden;
+`;
+  }
 
   s +=
-    `input[type=range].styled-slider.slider-progress::-moz-range-track {
+    `}
+
+`;
+
+
+  if (inputs.handle.isPresent.checked)
+    addRule('input[type=range].styled-slider::-moz-range-thumb:hover',
+      ['background', inputs.handle.hover.background.value],
+      ['border-color', handleHoverBorderColor]
+    );
+  if (inputs.track.isPresent.checked)
+    addRule('input[type=range].styled-slider:hover::-moz-range-track',
+      ['background', inputs.track.hover.background.value],
+      ['border-color', trackHoverBorderColor]
+    );
+
+  if (inputs.handle.isPresent.checked)
+    addRule('input[type=range].styled-slider::-moz-range-thumb:active',
+      ['background', inputs.handle.active.background.value],
+      ['border-color', handleActiveBorderColor]
+    );
+  if (inputs.track.isPresent.checked)
+    addRule('input[type=range].styled-slider:active::-moz-range-track',
+      ['background', inputs.track.active.background.value],
+      ['border-color', trackActiveBorderColor]
+    );
+
+  if (inputs.track.isPresent.checked && inputs.progress.isPresent.checked) {
+    s +=
+      `input[type=range].styled-slider.slider-progress::-moz-range-track {
   background: ${trackProgressBg} 0/var(--sx) 100% no-repeat, ${inputs.track.background.value};
 }
 
 `;
 
-  if (trackProgressHoverBg.length != 0) {
-    s +=
-      `input[type=range].styled-slider.slider-progress:hover::-moz-range-track {
+    if (trackProgressHoverBg.length != 0) {
+      s +=
+        `input[type=range].styled-slider.slider-progress:hover::-moz-range-track {
   background: ${trackProgressHoverBg} 0/var(--sx) 100% no-repeat, ${trackHoverNormalBg};
 }
 
 `;
-  }
+    }
 
-  if (trackProgressActiveBg.length != 0) {
-    s +=
-      `input[type=range].styled-slider.slider-progress:active::-moz-range-track {
+    if (trackProgressActiveBg.length != 0) {
+      s +=
+        `input[type=range].styled-slider.slider-progress:active::-moz-range-track {
   background: ${trackProgressActiveBg} 0/var(--sx) 100% no-repeat, ${trackActiveNormalBg};
 }
 
 `;
+    }
   }
 
   s +=
@@ -1010,8 +1107,9 @@ input[type=range].styled-slider::-ms-track {
   ]);
   const trackBorderRadius = decomposeStyle(`border-radius: ${inputs.track.borderRadius.value};`, ['border-top-left-radius', 'border-bottom-left-radius']);
 
-  s +=
-    `input[type=range].styled-slider.slider-progress::-ms-fill-lower {
+  if (inputs.progress.isPresent.checked) {
+    s +=
+      `input[type=range].styled-slider.slider-progress::-ms-fill-lower {
   height: ${adjustedTrackHeight};
   border-radius: ${trackBorderRadius['border-top-left-radius']} 0 0 ${trackBorderRadius['border-bottom-left-radius']};
   margin: -${trackBorderWidth['border-top-width']} 0 -${trackBorderWidth['border-bottom-width']} -${trackBorderWidth['border-left-width']};
@@ -1022,17 +1120,18 @@ input[type=range].styled-slider::-ms-track {
 
 `;
 
-  if (inputs.progress.hover.background.value.length != 0)
-    addRule('input[type=range].styled-slider.slider-progress:hover::-ms-fill-lower',
-      ['background', inputs.progress.hover.background.value],
-      ['border-color', trackHoverBorderColor]
-    );
+    if (inputs.progress.hover.background.value.length != 0)
+      addRule('input[type=range].styled-slider.slider-progress:hover::-ms-fill-lower',
+        ['background', inputs.progress.hover.background.value],
+        ['border-color', trackHoverBorderColor]
+      );
 
-  if (inputs.progress.active.background.value != 0)
-    addRule('input[type=range].styled-slider.slider-progress:active::-ms-fill-lower',
-      ['background', inputs.progress.active.background.value],
-      ['border-color', trackActiveBorderColor]
-    );
+    if (inputs.progress.active.background.value != 0)
+      addRule('input[type=range].styled-slider.slider-progress:active::-ms-fill-lower',
+        ['background', inputs.progress.active.background.value],
+        ['border-color', trackActiveBorderColor]
+      );
+  }
 
   output.textContent = s;
 
@@ -1065,6 +1164,15 @@ for (let e of rawInputs) {
 }
 
 inputs.element.disableOutline.addEventListener('change', generateStylesThrottled);
+inputs.handle.isPresent.addEventListener('change', generateStylesThrottled);
+
+function toggleTrackVisibility() {
+  setProgressSubContainersVisible(inputs.track.isPresent.checked && inputs.progress.isPresent.checked);
+  generateStylesThrottled();
+}
+
+inputs.track.isPresent.addEventListener('change', toggleTrackVisibility);
+inputs.progress.isPresent.addEventListener('change', toggleTrackVisibility);
 
 function setupCopyButton(buttonID, element) {
   const button = document.getElementById(buttonID);

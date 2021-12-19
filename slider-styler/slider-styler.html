@@ -29,10 +29,10 @@
       max-width: 70em;
     }
 
-    h1, h2, h3 {
+    h1, h3 {
       text-align: center;
       margin-top: 0.5em;
-      margin-bottom: 0.5em;
+      margin-bottom: 1em;
     }
 
     .textblock {
@@ -302,12 +302,14 @@
       <div class="example">
         <input class="styled-slider" type="range" />
       </div>
-      <br />
-      <div class="example">
-        <input class="styled-slider slider-progress" type="range" />
-      </div>
-      <div class="example">
-        <input class="styled-slider slider-progress" type="range" />
+      <div class="progressSubContainer">
+        <br />
+        <div class="example">
+          <input class="styled-slider slider-progress" type="range" />
+        </div>
+        <div class="example">
+          <input class="styled-slider slider-progress" type="range" />
+        </div>
       </div>
       <div style="height: 1em;"></div>
     </div>
@@ -321,12 +323,14 @@
         <div class="example">
           <input class="styled-slider" type="range" />
         </div>
-        <br />
-        <div class="example">
-          <input class="styled-slider slider-progress" type="range" />
-        </div>
-        <div class="example">
-          <input class="styled-slider slider-progress" type="range" />
+        <div class="progressSubContainer">
+          <br />
+          <div class="example">
+            <input class="styled-slider slider-progress" type="range" />
+          </div>
+          <div class="example">
+            <input class="styled-slider slider-progress" type="range" />
+          </div>
         </div>
         <div style="height: 1em;"></div>
       </div>
@@ -345,7 +349,7 @@
                 <input class="styled-slider" type="range" style="width:100%;" />
               </div>
             </div>
-            <div>
+            <div class="progressSubContainer">
               Styled sliders with progress:<br />
               <div class="example" style="display: inline-block;">
                 <input class="styled-slider slider-progress" type="range" />
@@ -406,7 +410,12 @@
 
         <!--handle section-->
         <div id="handle" class="group">
-          <h3>handle (thumb)</h3>
+          <h3>
+            <label title="Hiding handle is not supported for old non-Chromium based Edge.">
+              <input id="isPresent" type="checkbox" checked />
+              <strong>handle (thumb)</strong><span style="color: lightgray;"> *</span>
+            </label>
+          </h3>
 
           <!-- background section -->
           <div id="background" class="subgroup">
@@ -616,7 +625,12 @@
 
         <!-- track section -->
         <div id="track" class="group">
-          <h3>track</h3>
+          <h3>
+            <label title="Hiding track is not supported for old non-Chromium based Edge.">
+              <input id="isPresent" type="checkbox" checked />
+              <strong>track</strong><span style="color: lightgray;"> *</span>
+            </label>
+          </h3>
 
           <!-- background section -->
           <div id="background" class="subgroup">
@@ -807,7 +821,12 @@
 
         <!-- progress section -->
         <div id="progress" class="group">
-          <h3>track progress indication</h3>
+          <h3>
+            <label>
+              <input id="isPresent" type="checkbox" checked />
+              <strong>track progress indication</strong>
+            </label>
+          </h3>
 
           <!-- background section -->
           <div id="background" class="subgroup">
@@ -896,14 +915,14 @@
     </div>
   </div>
   <div id="explanation" class="textblock notQuite100PercentWide">
-    <p><strong>Some more details</strong></p>
+    <h2>Some more details</h2>
     <p>
       For progress indication to work, you need to add a script to your page, see <a href="#download">above</a>.
-      You can dowload, put it to your assets, and add it as external script:
+      You can dowload, put it into your assets, and add it as external script:
     </p>
     <pre class="codeContainer" style="display: inline-block;">&lt;script src="range-input.js"&gt;&lt;/script&gt;</pre>
     <p>
-      or just copy-paste the contents right inside the <code>&lt;script&gt;</code> element.<br />
+      or just copy-paste the contents right inside a <code>&lt;script&gt;</code> element.<br />
       The idea is borrowed from
       <a href="https://css-tricks.com/sliding-nightmare-understanding-range-input/#the-range-progress-fill-component"
          title="A Sliding Nightmare: Understanding the Range Input"
