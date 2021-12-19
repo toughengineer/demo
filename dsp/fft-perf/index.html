@@ -388,9 +388,9 @@
     </span>
     <h1>Performance overview</h1>
     <p>
-      I compared <a href="https://github.com/indutny/fft.js" title="fft.js on GitHub" target="_blank"><strong>fft.js</strong> 4.0.3</a>
+      I compared <a href="https://github.com/indutny/fft.js" title="fft.js on GitHub" target="_blank" rel="noopener"><strong>fft.js</strong> 4.0.3</a>
       (which claims to be "The fastest JS Radix-4/Radix-2 FFT implementation"),
-      and <a href="https://github.com/mborgerding/kissfft" title="KISS FFT on GitHub" target="_blank"><strong>KISS&nbsp;FFT</strong></a> compiled into WASM
+      and <a href="https://github.com/mborgerding/kissfft" title="KISS FFT on GitHub" target="_blank" rel="noopener"><strong>KISS&nbsp;FFT</strong></a> compiled into WASM
       with Emscripten <span class="note">(see the <a href="#emscripten">next</a> section for details)</span>.
     </p>
     <p>
@@ -427,8 +427,9 @@
       <strong>fft.js</strong> implements only direct transformation for real-valued data, the inverse you'll have to implement yourself, or
       use the general complex-valued variant, which does not take into account the
       <a href="https://en.wikipedia.org/wiki/Fast_Fourier_transform#FFT_algorithms_specialized_for_real_or_symmetric_data"
+         title="FFT on Wikipedia"
          target="_blank"
-         title="FFT on Wikipedia">conjugate symmetry</a>
+         rel="noopener">conjugate symmetry</a>
       of the complex frequency data and runs noticeably slower than the specialized variant.<br />
       Also <strong>KISS&nbsp;FFT</strong> can handle any size of data, implementing optimizations for factors 2, 3, 4, and 5,
       while <strong>fft.js</strong> requires size to be a power of 2.
@@ -443,7 +444,7 @@
     <h1 id="emscripten">Compiling KISS&nbsp;FFT into WASM with JS bindings</h1>
     <p>
       First we need to get Emscripten SDK. The easiest way is to follow instructions on
-      <a href="https://emscripten.org/docs/getting_started/downloads.html" target="_blank" title="Download and install Emscripten docs">this page</a>
+      <a href="https://emscripten.org/docs/getting_started/downloads.html" title="Download and install Emscripten docs" target="_blank" rel="noopener">this page</a>
       and use <code>emsdk</code> tool.
     </p>
     <p>
@@ -466,8 +467,9 @@ const result = fft.transform(data);</code></pre>
     <p>
       we have to implement bindings. Luckily it is super easy to do once you figure out how to use
       <a href="https://emscripten.org/docs/porting/connecting_cpp_and_javascript/embind.html"
+         title="Embind docs"
          target="_blank"
-         title="Embind docs">Embind</a>.<br />
+         rel="noopener">Embind</a>.<br />
       To be able to pass data in javascript <code class="language-js">Float64Array</code>s to C++ code and return result back
       I came up with this implementation <span class="note">(see comments in code)</span>:
     </p>
@@ -641,10 +643,10 @@ const output = fft.transform();  // perform transformation
   </div>
   <div class="credits" style="padding: 2em 0 1em 0;">
     <div class="notQuite100PercentWide centered" style="text-align:center;">
-      View source code on <a class="no-external-link-icon" href="https://github.com/toughengineer/demo/tree/main/dsp/fft-perf" target="_blank"><img class="icon" src="/demo/mark-github.svg" /> GitHub</a>
+      View source code on <a class="no-external-link-icon" href="https://github.com/toughengineer/demo/tree/main/dsp/fft-perf" target="_blank" rel="noopener"><img class="icon" src="/demo/mark-github.svg" /> GitHub</a>
       <span class="note">(Not recommended for sanity sake.)</span> &#xFF5C;
-      <a class="no-external-link-icon" href="https://prismjs.com/" target="_blank">Prism syntax highlighter</a> &#xFF5C;
-      <a class="no-external-link-icon" href="https://icons8.com/icon/43738/external-link" target="_blank">External Link icon by Icons8</a><br />
+      <a class="no-external-link-icon" href="https://prismjs.com/" target="_blank" rel="noopener">Prism syntax highlighter</a> &#xFF5C;
+      <a class="no-external-link-icon" href="https://icons8.com/icon/43738/external-link" target="_blank" rel="noopener">External Link icon by Icons8</a><br />
       <span class="note">These links will open in new tabs.</span>
     </div>
   </div>
