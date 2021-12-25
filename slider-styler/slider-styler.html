@@ -133,13 +133,13 @@
     }
 
     .validationDisplay {
-      padding: 1px;
-      border: 1px solid transparent;
-      border-radius: 3px;
+      padding: 3px;
+      border: 3px solid transparent;
+      border-radius: 5px;
     }
 
       .validationDisplay.invalid {
-        border-color: red;
+        border-color: #f55;
       }
 
     .flexVCentered {
@@ -183,7 +183,7 @@
       top: 20vh;
     }
 
-    .copyButton {
+    .fadedButton {
       background-color: #efefef;
       margin-left: 0.3em;
       margin-right: 0.3em;
@@ -193,16 +193,16 @@
       opacity: 0.5;
     }
 
-      .copyButton:hover {
+      .fadedButton:hover {
         opacity: 1;
       }
 
-      .copyButton.copied {
+      .fadedButton.copied {
         background-color: #0c0;
         transition: background-color 0s;
       }
 
-      .copyButton.not-copied {
+      .fadedButton.not-copied {
         background-color: #e55;
         transition: background-color 0s;
       }
@@ -216,6 +216,11 @@
       margin-right: 0.1em;
       display: inline-block;
       vertical-align: text-bottom;
+    }
+
+    .resetIcon::before {
+      content: "\21BA";
+      margin-right: 0.3em;
     }
 
     input:not(:checked) ~ .pinIcon {
@@ -346,7 +351,7 @@
               </div>
               <span class="note" style="margin-left: 1em;">use</span>
               <span id="styledSliderClass" class="code">class="styled-slider"</span>
-              <button id="copyStyledSliderButtonClass" class="copyButton" title="Copy class attribute."><span class="copyIcon">copy</span></button>
+              <button id="copyStyledSliderButtonClass" class="fadedButton" title="Copy class attribute."><span class="copyIcon">copy</span></button>
               <div class="example">
                 <input class="styled-slider" type="range" style="width:100%;" />
               </div>
@@ -358,7 +363,7 @@
               </div>
               <span class="note" style="margin-left: 1em;">use</span>
               <span id="styledSliderProgressClass" class="code">class="styled-slider slider-progress"</span>
-              <button id="copyStyledSliderProgressButtonClass" class="copyButton" title="Copy class attribute."><span class="copyIcon">copy</span></button>
+              <button id="copyStyledSliderProgressButtonClass" class="fadedButton" title="Copy class attribute."><span class="copyIcon">copy</span></button>
               <div class="example">
                 <input class="styled-slider slider-progress" type="range" style="width:100%;" />
               </div>
@@ -403,7 +408,7 @@
               <strong>disable focus outline</strong>
             </label>
             <div class="note subgroup">
-              Focus outline for customized slider appearance generally looks ugly in Chromium.<br />
+              Focus outline for customized slider appearance generally looks ugly.<br />
               One way to make it work is to set <code>&lt;input&gt;</code> element height (above) greater than
               the height of the handle.
             </div>
@@ -413,7 +418,7 @@
         <!--handle section-->
         <div id="handle" class="group">
           <h3>
-            <label title="Hiding handle is not supported for old non-Chromium based Edge.">
+            <label title="Hiding handle is not supported for old non-Chromium-based Edge.">
               <input id="isPresent" type="checkbox" checked />
               <strong>handle (thumb)</strong><span style="color: lightgray;"> *</span>
             </label>
@@ -628,7 +633,7 @@
         <!-- track section -->
         <div id="track" class="group">
           <h3>
-            <label title="Hiding track is not supported for old non-Chromium based Edge.">
+            <label title="Hiding track is not supported for old non-Chromium-based Edge.">
               <input id="isPresent" type="checkbox" checked />
               <strong>track</strong><span style="color: lightgray;"> *</span>
             </label>
@@ -893,19 +898,28 @@
       </div>
       <div id="generatedCssBlock" style="display: inline-block; vertical-align: top; width: 100%; max-width: 50em; margin-bottom: 1em;">
         <label style="float: right;" title="Check to pin source code section on screen.">
-          <input id="stickCssBlockCheckbox" type="checkbox" />
+          <input id="stickCssBlockCheckbox" type="checkbox" autocomplete="off" />
           pin
           <span class="pinIcon">&#x1F4CC;</span>
         </label>
         CSS:
         <a id="downloadCssLink" href="javascript:void(0)" title="Save generated CSS to your computer.">download</a>
-        <button id="copyCssButton" class="copyButton" title="Copy generated CSS to clipboard."><span class="copyIcon">copy</span></button>
+        <button id="copyCssButton" class="fadedButton" title="Copy generated CSS to clipboard."><span class="copyIcon">copy</span></button>
+        <div style="margin: 0.5em 0 0.5em 0;">
+          <label title="CSS class name to use for styling input range sliders.">
+            Class name:
+            <span id="classNameValidationDisplay" class="validationDisplay" style="display: inline-block;">
+              <input id="className" class="code" style="width: 25em;" value="styled-slider" autocomplete="off" />
+            </span>
+          </label>
+          <button id="resetClassNameButton" class="fadedButton" title="Reset class name."><span class="resetIcon">reset</span></button>
+        </div>
         <textarea id="styleDisplay" class="codeContainer" style="height: 70vh; width: 100%; margin-bottom: 1em;" readonly>change some styles</textarea>
 
         <div id="download" class="dummy" style="margin-top: -20vh; height: 20vh;"></div>
         JS for progress tracking:
         <a class="no-external-link-icon" href="range-input.js" title="Download script." download target="_blank">download</a>
-        <button id="copyJSButton" class="copyButton" title="Copy script to clipboard."><span class="copyIcon">copy</span></button>
+        <button id="copyJSButton" class="fadedButton" title="Copy script to clipboard."><span class="copyIcon">copy</span></button>
         <pre id="scriptDisplay" class="codeContainer">for (let e of document.querySelectorAll('input[type="range"].slider-progress')) {
   e.style.setProperty('--value', e.value);
   e.style.setProperty('--min', e.min == '' ? '0' : e.min);
@@ -932,7 +946,8 @@
          rel="noopener"><em>this great article</em></a>.
     </p>
     <p>
-      TODO: figure out how to neatly display focus outline. Currently it looks ugly as fuck, that's why it is disabled by default.
+      TODO: figure out how to neatly display focus outline.
+      Currently it looks ugly as fuck in general, that's why it is disabled by default.
     </p>
     <p>
       Handle may be one pixel off center with respect to track. You'll have to wangjangle with it a bit.<br />

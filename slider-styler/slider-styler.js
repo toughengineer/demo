@@ -1,4 +1,4 @@
-const version = '20211219';
+const version = '20211225';
 
 const defaultSetup = {
   element: {
@@ -698,6 +698,9 @@ const decomposeStyle = (function () {
   }
 })();
 
+const defaultStyledSliderClassName = 'styled-slider';
+let styledSliderClassName = defaultStyledSliderClassName;
+
 function generateStyles() {
   const handleWidth = inputs.handle.width.value;
   const handleHeight = inputs.handle.height.value;
@@ -757,7 +760,7 @@ function generateStyles() {
   let s =
     `/*generated with Input range slider CSS style generator (version ${version})
 https://toughengineer.github.io/demo/slider-styler*/
-input[type=range].styled-slider {
+input[type=range].${styledSliderClassName} {
 `;
 
   if (inputs.element.height.value.length != 0)
@@ -773,7 +776,7 @@ input[type=range].styled-slider {
   if (inputs.track.isPresent.checked && inputs.progress.isPresent.checked)
     s +=
       `/*progress support*/
-input[type=range].styled-slider.slider-progress {
+input[type=range].${styledSliderClassName}.slider-progress {
   --range: calc(var(--max) - var(--min));
   --ratio: calc((var(--value) - var(--min)) / var(--range));
   --sx: calc(${inputs.handle.isPresent.checked ?
@@ -786,7 +789,7 @@ input[type=range].styled-slider.slider-progress {
 
   if (inputs.element.disableOutline.checked)
     s +=
-      `input[type=range].styled-slider:focus {
+      `input[type=range].${styledSliderClassName}:focus {
   outline: none;
 }
 
@@ -794,7 +797,7 @@ input[type=range].styled-slider.slider-progress {
 
   s +=
     `/*webkit*/
-input[type=range].styled-slider::-webkit-slider-thumb {
+input[type=range].${styledSliderClassName}::-webkit-slider-thumb {
   -webkit-appearance: none;
 `;
 
@@ -823,7 +826,7 @@ input[type=range].styled-slider::-webkit-slider-thumb {
 `;
 
   s +=
-    `input[type=range].styled-slider::-webkit-slider-runnable-track {
+    `input[type=range].${styledSliderClassName}::-webkit-slider-runnable-track {
   height: ${trackHeight};
   border: ${inputs.track.border.value};
 `;
@@ -857,7 +860,7 @@ input[type=range].styled-slider::-webkit-slider-thumb {
   const handleHoverBorderColor = inputs.handle.border.value == 'none' ? '' : inputs.handle.hover.borderColor.value;
 
   if (inputs.handle.isPresent.checked)
-    addRule('input[type=range].styled-slider::-webkit-slider-thumb:hover',
+    addRule(`input[type=range].${styledSliderClassName}::-webkit-slider-thumb:hover`,
       ['background', inputs.handle.hover.background.value],
       ['border-color', handleHoverBorderColor]
     );
@@ -865,7 +868,7 @@ input[type=range].styled-slider::-webkit-slider-thumb {
   const trackHoverBorderColor = inputs.track.border.value == 'none' ? '' : inputs.track.hover.borderColor.value;
 
   if (inputs.track.isPresent.checked)
-    addRule('input[type=range].styled-slider:hover::-webkit-slider-runnable-track',
+    addRule(`input[type=range].${styledSliderClassName}:hover::-webkit-slider-runnable-track`,
       ['background', inputs.track.hover.background.value],
       ['border-color', trackHoverBorderColor]
     );
@@ -873,7 +876,7 @@ input[type=range].styled-slider::-webkit-slider-thumb {
   const handleActiveBorderColor = inputs.handle.border.value == 'none' ? '' : inputs.handle.active.borderColor.value;
 
   if (inputs.handle.isPresent.checked)
-    addRule('input[type=range].styled-slider::-webkit-slider-thumb:active',
+    addRule(`input[type=range].${styledSliderClassName}::-webkit-slider-thumb:active`,
       ['background', inputs.handle.active.background.value],
       ['border-color', handleActiveBorderColor]
     );
@@ -881,7 +884,7 @@ input[type=range].styled-slider::-webkit-slider-thumb {
   const trackActiveBorderColor = inputs.track.border.value == 'none' ? '' : inputs.track.active.borderColor.value;
 
   if (inputs.track.isPresent.checked)
-    addRule('input[type=range].styled-slider:active::-webkit-slider-runnable-track',
+    addRule(`input[type=range].${styledSliderClassName}:active::-webkit-slider-runnable-track`,
       ['background', inputs.track.active.background.value],
       ['border-color', trackActiveBorderColor]
     );
@@ -911,7 +914,7 @@ input[type=range].styled-slider::-webkit-slider-thumb {
 
   if (inputs.track.isPresent.checked && inputs.progress.isPresent.checked) {
     s +=
-      `input[type=range].styled-slider.slider-progress::-webkit-slider-runnable-track {
+      `input[type=range].${styledSliderClassName}.slider-progress::-webkit-slider-runnable-track {
   background: ${trackProgressBg} 0/var(--sx) 100% no-repeat, ${inputs.track.background.value};
 }
 
@@ -919,7 +922,7 @@ input[type=range].styled-slider::-webkit-slider-thumb {
 
     if (trackProgressHoverBg.length != 0)
       s +=
-        `input[type=range].styled-slider.slider-progress:hover::-webkit-slider-runnable-track {
+        `input[type=range].${styledSliderClassName}.slider-progress:hover::-webkit-slider-runnable-track {
   background: ${trackProgressHoverBg} 0/var(--sx) 100% no-repeat, ${trackHoverNormalBg};
 }
 
@@ -927,7 +930,7 @@ input[type=range].styled-slider::-webkit-slider-thumb {
 
     if (trackProgressActiveBg.length != 0)
       s +=
-        `input[type=range].styled-slider.slider-progress:active::-webkit-slider-runnable-track {
+        `input[type=range].${styledSliderClassName}.slider-progress:active::-webkit-slider-runnable-track {
   background: ${trackProgressActiveBg} 0/var(--sx) 100% no-repeat, ${trackActiveNormalBg};
 }
 
@@ -946,7 +949,7 @@ input[type=range].styled-slider::-webkit-slider-thumb {
 
   s +=
     `/*mozilla*/
-input[type=range].styled-slider::-moz-range-thumb {
+input[type=range].${styledSliderClassName}::-moz-range-thumb {
 `;
 
   if (inputs.handle.isPresent.checked) {
@@ -973,7 +976,7 @@ input[type=range].styled-slider::-moz-range-thumb {
 `;
 
   s +=
-    `input[type=range].styled-slider::-moz-range-track {
+    `input[type=range].${styledSliderClassName}::-moz-range-track {
   height: ${adjustedTrackHeight};
   border: ${inputs.track.border.value};
 `;
@@ -998,30 +1001,30 @@ input[type=range].styled-slider::-moz-range-thumb {
 
 
   if (inputs.handle.isPresent.checked)
-    addRule('input[type=range].styled-slider::-moz-range-thumb:hover',
+    addRule(`input[type=range].${styledSliderClassName}::-moz-range-thumb:hover`,
       ['background', inputs.handle.hover.background.value],
       ['border-color', handleHoverBorderColor]
     );
   if (inputs.track.isPresent.checked)
-    addRule('input[type=range].styled-slider:hover::-moz-range-track',
+    addRule(`input[type=range].${styledSliderClassName}:hover::-moz-range-track`,
       ['background', inputs.track.hover.background.value],
       ['border-color', trackHoverBorderColor]
     );
 
   if (inputs.handle.isPresent.checked)
-    addRule('input[type=range].styled-slider::-moz-range-thumb:active',
+    addRule(`input[type=range].${styledSliderClassName}::-moz-range-thumb:active`,
       ['background', inputs.handle.active.background.value],
       ['border-color', handleActiveBorderColor]
     );
   if (inputs.track.isPresent.checked)
-    addRule('input[type=range].styled-slider:active::-moz-range-track',
+    addRule(`input[type=range].${styledSliderClassName}:active::-moz-range-track`,
       ['background', inputs.track.active.background.value],
       ['border-color', trackActiveBorderColor]
     );
 
   if (inputs.track.isPresent.checked && inputs.progress.isPresent.checked) {
     s +=
-      `input[type=range].styled-slider.slider-progress::-moz-range-track {
+      `input[type=range].${styledSliderClassName}.slider-progress::-moz-range-track {
   background: ${trackProgressBg} 0/var(--sx) 100% no-repeat, ${inputs.track.background.value};
 }
 
@@ -1029,7 +1032,7 @@ input[type=range].styled-slider::-moz-range-thumb {
 
     if (trackProgressHoverBg.length != 0) {
       s +=
-        `input[type=range].styled-slider.slider-progress:hover::-moz-range-track {
+        `input[type=range].${styledSliderClassName}.slider-progress:hover::-moz-range-track {
   background: ${trackProgressHoverBg} 0/var(--sx) 100% no-repeat, ${trackHoverNormalBg};
 }
 
@@ -1038,7 +1041,7 @@ input[type=range].styled-slider::-moz-range-thumb {
 
     if (trackProgressActiveBg.length != 0) {
       s +=
-        `input[type=range].styled-slider.slider-progress:active::-moz-range-track {
+        `input[type=range].${styledSliderClassName}.slider-progress:active::-moz-range-track {
   background: ${trackProgressActiveBg} 0/var(--sx) 100% no-repeat, ${trackActiveNormalBg};
 }
 
@@ -1048,17 +1051,17 @@ input[type=range].styled-slider::-moz-range-thumb {
 
   s +=
     `/*ms*/
-input[type=range].styled-slider::-ms-fill-upper {
+input[type=range].${styledSliderClassName}::-ms-fill-upper {
   background: transparent;
   border-color: transparent;
 }
 
-input[type=range].styled-slider::-ms-fill-lower {
+input[type=range].${styledSliderClassName}::-ms-fill-lower {
   background: transparent;
   border-color: transparent;
 }
 
-input[type=range].styled-slider::-ms-thumb {
+input[type=range].${styledSliderClassName}::-ms-thumb {
   width: ${handleWidth};
   height: ${handleHeight};
   border-radius: ${inputs.handle.borderRadius.value};
@@ -1069,7 +1072,7 @@ input[type=range].styled-slider::-ms-thumb {
   box-sizing: border-box;
 }
 
-input[type=range].styled-slider::-ms-track {
+input[type=range].${styledSliderClassName}::-ms-track {
   height: ${trackHeight};
   border-radius: ${inputs.track.borderRadius.value};
   background: ${inputs.track.background.value};
@@ -1080,22 +1083,22 @@ input[type=range].styled-slider::-ms-track {
 
 `;
 
-  addRule('input[type=range].styled-slider::-ms-thumb:hover',
+  addRule(`input[type=range].${styledSliderClassName}::-ms-thumb:hover`,
     ['background', inputs.handle.hover.background.value],
     ['border-color', handleHoverBorderColor]
   );
 
-  addRule('input[type=range].styled-slider:hover::-ms-track',
+  addRule(`input[type=range].${styledSliderClassName}:hover::-ms-track`,
     ['background', inputs.track.hover.background.value],
     ['border-color', trackHoverBorderColor]
   );
 
-  addRule('input[type=range].styled-slider::-ms-thumb:active',
+  addRule(`input[type=range].${styledSliderClassName}::-ms-thumb:active`,
     ['background', inputs.handle.active.background.value],
     ['border-color', handleActiveBorderColor]
   );
 
-  addRule('input[type=range].styled-slider:active::-ms-track',
+  addRule(`input[type=range].${styledSliderClassName}:active::-ms-track`,
     ['background', inputs.track.active.background.value],
     ['border-color', trackActiveBorderColor]
   );
@@ -1109,7 +1112,7 @@ input[type=range].styled-slider::-ms-track {
 
   if (inputs.progress.isPresent.checked) {
     s +=
-      `input[type=range].styled-slider.slider-progress::-ms-fill-lower {
+      `input[type=range].${styledSliderClassName}.slider-progress::-ms-fill-lower {
   height: ${adjustedTrackHeight};
   border-radius: ${trackBorderRadius['border-top-left-radius']} 0 0 ${trackBorderRadius['border-bottom-left-radius']};
   margin: -${trackBorderWidth['border-top-width']} 0 -${trackBorderWidth['border-bottom-width']} -${trackBorderWidth['border-left-width']};
@@ -1121,13 +1124,13 @@ input[type=range].styled-slider::-ms-track {
 `;
 
     if (inputs.progress.hover.background.value.length != 0)
-      addRule('input[type=range].styled-slider.slider-progress:hover::-ms-fill-lower',
+      addRule(`input[type=range].${styledSliderClassName}.slider-progress:hover::-ms-fill-lower`,
         ['background', inputs.progress.hover.background.value],
         ['border-color', trackHoverBorderColor]
       );
 
     if (inputs.progress.active.background.value != 0)
-      addRule('input[type=range].styled-slider.slider-progress:active::-ms-fill-lower',
+      addRule(`input[type=range].${styledSliderClassName}.slider-progress:active::-ms-fill-lower`,
         ['background', inputs.progress.active.background.value],
         ['border-color', trackActiveBorderColor]
       );
@@ -1174,6 +1177,47 @@ function toggleTrackVisibility() {
 inputs.track.isPresent.addEventListener('change', toggleTrackVisibility);
 inputs.progress.isPresent.addEventListener('change', toggleTrackVisibility);
 
+const isStyledSliderClassNameValid = (() => {
+  const re = /^[a-zA-Z]+[_a-zA-Z0-9-]*$/;
+  return (name) => {
+    return re.test(name) && name != 'slider-progress';
+  };
+})();
+
+const classNameInput = document.getElementById('className');
+const classNameValidationDisplay = document.getElementById('classNameValidationDisplay');
+classNameInput.addEventListener('input', () => {
+  if (isStyledSliderClassNameValid(classNameInput.value)) {
+    classNameValidationDisplay.classList.remove('invalid');
+  }
+  else {
+    classNameValidationDisplay.classList.add('invalid');
+  }
+});
+const styledSliders = document.querySelectorAll('.' + styledSliderClassName);
+const styledSliderClass = document.getElementById('styledSliderClass');
+const styledSliderProgressClass = document.getElementById('styledSliderProgressClass');
+function setStyledSliderClassName(name) {
+  for (let e of styledSliders)
+    e.classList.replace(styledSliderClassName, name);
+  styledSliderClass.textContent = `class="${name}"`;
+  styledSliderProgressClass.textContent = `class="${name} slider-progress"`;
+  styledSliderClassName = name;
+  generateStylesThrottled();
+}
+classNameInput.addEventListener('change', () => {
+  if (classNameInput.value == styledSliderClassName || !isStyledSliderClassNameValid(classNameInput.value))
+    return;
+
+  setStyledSliderClassName(classNameInput.value);
+});
+
+document.getElementById('resetClassNameButton').addEventListener('click', () => {
+  classNameInput.value = defaultStyledSliderClassName;
+  setStyledSliderClassName(defaultStyledSliderClassName);
+  classNameValidationDisplay.classList.remove('invalid');
+});
+
 function setupCopyButton(buttonID, element) {
   const button = document.getElementById(buttonID);
   const onFail = (e) => {
@@ -1200,8 +1244,8 @@ function setupCopyButton(buttonID, element) {
   });
 }
 
-setupCopyButton('copyStyledSliderButtonClass', document.getElementById('styledSliderClass'));
-setupCopyButton('copyStyledSliderProgressButtonClass', document.getElementById('styledSliderProgressClass'));
+setupCopyButton('copyStyledSliderButtonClass', styledSliderClass);
+setupCopyButton('copyStyledSliderProgressButtonClass', styledSliderProgressClass);
 
 setupCopyButton('copyCssButton', output);
 
