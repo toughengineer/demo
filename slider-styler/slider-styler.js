@@ -323,17 +323,17 @@ function setupOverriddenBackgroundSection(rootSelector, bg, defaultBg) {
   return setupResult;
 }
 
-function setInputStep(input, unit, converValue = false) {
+function setInputStep(input, unit, convertValue = false) {
   const emToPixels = 16;
   switch (unit) {
     case 'px':
-      if (converValue)
+      if (convertValue)
         input.value *= emToPixels;
       input.step = 1;
       break;
 
     case 'em':
-      if (converValue)
+      if (convertValue)
         input.value /= emToPixels;
       input.step = 0.1;
       break;
@@ -770,12 +770,12 @@ input[type=range].${styledSliderClassName} {
   s +=
     `  -webkit-appearance: none;
 }
-
 `;
 
   if (inputs.track.isPresent.checked && inputs.progress.isPresent.checked)
     s +=
-      `/*progress support*/
+      `
+/*progress support*/
 input[type=range].${styledSliderClassName}.slider-progress {
   --range: calc(var(--max) - var(--min));
   --ratio: calc((var(--value) - var(--min)) / var(--range));
@@ -784,19 +784,19 @@ input[type=range].${styledSliderClassName}.slider-progress {
         'var(--ratio) * 100%'
       });
 }
-
 `;
 
   if (inputs.element.disableOutline.checked)
     s +=
-      `input[type=range].${styledSliderClassName}:focus {
+      `
+input[type=range].${styledSliderClassName}:focus {
   outline: none;
 }
-
 `;
 
   s +=
-    `/*webkit*/
+    `
+/*webkit*/
 input[type=range].${styledSliderClassName}::-webkit-slider-thumb {
   -webkit-appearance: none;
 `;
@@ -822,11 +822,11 @@ input[type=range].${styledSliderClassName}::-webkit-slider-thumb {
 
   s +=
     `}
-
 `;
 
   s +=
-    `input[type=range].${styledSliderClassName}::-webkit-slider-runnable-track {
+    `
+input[type=range].${styledSliderClassName}::-webkit-slider-runnable-track {
   height: ${trackHeight};
   border: ${inputs.track.border.value};
 `;
@@ -854,7 +854,7 @@ input[type=range].${styledSliderClassName}::-webkit-slider-thumb {
       if (p[1].length != 0)
         style += `  ${p[0]}: ${p[1]};\n`;
     if (style.length != 0)
-      s += selector + ' {\n' + style + '}\n\n';
+      s += '\n' + selector + ' {\n' + style + '}\n';
   }
 
   const handleHoverBorderColor = inputs.handle.border.value == 'none' ? '' : inputs.handle.hover.borderColor.value;
@@ -914,26 +914,26 @@ input[type=range].${styledSliderClassName}::-webkit-slider-thumb {
 
   if (inputs.track.isPresent.checked && inputs.progress.isPresent.checked) {
     s +=
-      `input[type=range].${styledSliderClassName}.slider-progress::-webkit-slider-runnable-track {
+      `
+input[type=range].${styledSliderClassName}.slider-progress::-webkit-slider-runnable-track {
   background: ${trackProgressBg} 0/var(--sx) 100% no-repeat, ${inputs.track.background.value};
 }
-
 `;
 
     if (trackProgressHoverBg.length != 0)
       s +=
-        `input[type=range].${styledSliderClassName}.slider-progress:hover::-webkit-slider-runnable-track {
+        `
+input[type=range].${styledSliderClassName}.slider-progress:hover::-webkit-slider-runnable-track {
   background: ${trackProgressHoverBg} 0/var(--sx) 100% no-repeat, ${trackHoverNormalBg};
 }
-
 `;
 
     if (trackProgressActiveBg.length != 0)
       s +=
-        `input[type=range].${styledSliderClassName}.slider-progress:active::-webkit-slider-runnable-track {
+        `
+input[type=range].${styledSliderClassName}.slider-progress:active::-webkit-slider-runnable-track {
   background: ${trackProgressActiveBg} 0/var(--sx) 100% no-repeat, ${trackActiveNormalBg};
 }
-
 `;
 
   }
@@ -948,7 +948,8 @@ input[type=range].${styledSliderClassName}::-webkit-slider-thumb {
   const adjustedTrackHeight = getAdjustedLength(trackHeight, trackBorder, 'border-top-width', 'border-bottom-width');
 
   s +=
-    `/*mozilla*/
+    `
+/*mozilla*/
 input[type=range].${styledSliderClassName}::-moz-range-thumb {
 `;
 
@@ -972,11 +973,11 @@ input[type=range].${styledSliderClassName}::-moz-range-thumb {
 
   s +=
     `}
-
 `;
 
   s +=
-    `input[type=range].${styledSliderClassName}::-moz-range-track {
+    `
+input[type=range].${styledSliderClassName}::-moz-range-track {
   height: ${adjustedTrackHeight};
   border: ${inputs.track.border.value};
 `;
@@ -996,7 +997,6 @@ input[type=range].${styledSliderClassName}::-moz-range-thumb {
 
   s +=
     `}
-
 `;
 
 
@@ -1024,33 +1024,34 @@ input[type=range].${styledSliderClassName}::-moz-range-thumb {
 
   if (inputs.track.isPresent.checked && inputs.progress.isPresent.checked) {
     s +=
-      `input[type=range].${styledSliderClassName}.slider-progress::-moz-range-track {
+      `
+input[type=range].${styledSliderClassName}.slider-progress::-moz-range-track {
   background: ${trackProgressBg} 0/var(--sx) 100% no-repeat, ${inputs.track.background.value};
 }
-
 `;
 
     if (trackProgressHoverBg.length != 0) {
       s +=
-        `input[type=range].${styledSliderClassName}.slider-progress:hover::-moz-range-track {
+        `
+input[type=range].${styledSliderClassName}.slider-progress:hover::-moz-range-track {
   background: ${trackProgressHoverBg} 0/var(--sx) 100% no-repeat, ${trackHoverNormalBg};
 }
-
 `;
     }
 
     if (trackProgressActiveBg.length != 0) {
       s +=
-        `input[type=range].${styledSliderClassName}.slider-progress:active::-moz-range-track {
+        `
+input[type=range].${styledSliderClassName}.slider-progress:active::-moz-range-track {
   background: ${trackProgressActiveBg} 0/var(--sx) 100% no-repeat, ${trackActiveNormalBg};
 }
-
 `;
     }
   }
 
   s +=
-    `/*ms*/
+    `
+/*ms*/
 input[type=range].${styledSliderClassName}::-ms-fill-upper {
   background: transparent;
   border-color: transparent;
@@ -1080,7 +1081,6 @@ input[type=range].${styledSliderClassName}::-ms-track {
   box-shadow: ${inputs.track.shadow.value};
   box-sizing: border-box;
 }
-
 `;
 
   addRule(`input[type=range].${styledSliderClassName}::-ms-thumb:hover`,
@@ -1112,7 +1112,8 @@ input[type=range].${styledSliderClassName}::-ms-track {
 
   if (inputs.progress.isPresent.checked) {
     s +=
-      `input[type=range].${styledSliderClassName}.slider-progress::-ms-fill-lower {
+      `
+input[type=range].${styledSliderClassName}.slider-progress::-ms-fill-lower {
   height: ${adjustedTrackHeight};
   border-radius: ${trackBorderRadius['border-top-left-radius']} 0 0 ${trackBorderRadius['border-bottom-left-radius']};
   margin: -${trackBorderWidth['border-top-width']} 0 -${trackBorderWidth['border-bottom-width']} -${trackBorderWidth['border-left-width']};
@@ -1120,7 +1121,6 @@ input[type=range].${styledSliderClassName}::-ms-track {
   border: ${inputs.track.border.value};
   border-right-width: 0;
 }
-
 `;
 
     if (inputs.progress.hover.background.value.length != 0)
