@@ -1116,7 +1116,10 @@ input[type=range].${styledSliderClassName}::-ms-track {
 input[type=range].${styledSliderClassName}.slider-progress::-ms-fill-lower {
   height: ${adjustedTrackHeight};
   border-radius: ${trackBorderRadius['border-top-left-radius']} 0 0 ${trackBorderRadius['border-bottom-left-radius']};
-  margin: -${trackBorderWidth['border-top-width']} 0 -${trackBorderWidth['border-bottom-width']} -${trackBorderWidth['border-left-width']};
+  margin: ${inputs.track.border.value == 'none'
+    ? '0'
+    : `-${trackBorderWidth['border-top-width']} 0 -${trackBorderWidth['border-bottom-width']} -${trackBorderWidth['border-left-width']}`
+  };
   background: ${inputs.progress.background.value};
   border: ${inputs.track.border.value};
   border-right-width: 0;
