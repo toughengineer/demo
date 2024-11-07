@@ -1103,12 +1103,16 @@ input[type=range].${styledSliderClassName}::-ms-track {
     ['border-color', trackActiveBorderColor]
   );
 
-  const trackBorderWidth = inputs.track.border.value == 'none' ? '0' : decomposeStyle(`border: ${inputs.track.border.value};`, [
-    'border-top-width',
-    'border-bottom-width',
-    'border-left-width'
-  ]);
   const trackBorderRadius = decomposeStyle(`border-radius: ${inputs.track.borderRadius.value};`, ['border-top-left-radius', 'border-bottom-left-radius']);
+  
+  const trackProgressMargin = inputs.track.border.value == 'none' ? '0' : function(){
+    const trackBorderWidth = decomposeStyle(`border: ${inputs.track.border.value};`, [
+      'border-top-width',
+      'border-bottom-width',
+      'border-left-width'
+    ]);
+    return `-${trackBorderWidth['border-top-width']} 0 -${trackBorderWidth['border-bottom-width']} -${trackBorderWidth['border-left-width']}`;
+  }();
 
   if (inputs.progress.isPresent.checked) {
     s +=
@@ -1116,10 +1120,7 @@ input[type=range].${styledSliderClassName}::-ms-track {
 input[type=range].${styledSliderClassName}.slider-progress::-ms-fill-lower {
   height: ${adjustedTrackHeight};
   border-radius: ${trackBorderRadius['border-top-left-radius']} 0 0 ${trackBorderRadius['border-bottom-left-radius']};
-  margin: ${inputs.track.border.value == 'none'
-    ? '0'
-    : `-${trackBorderWidth['border-top-width']} 0 -${trackBorderWidth['border-bottom-width']} -${trackBorderWidth['border-left-width']}`
-  };
+  margin: ${trackProgressMargin};
   background: ${inputs.progress.background.value};
   border: ${inputs.track.border.value};
   border-right-width: 0;
